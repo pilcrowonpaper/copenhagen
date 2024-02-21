@@ -61,4 +61,4 @@ A notification should be sent to the previous email address when the user change
 
 ## Rate limiting
 
-Any endpoint that sends an email should have strict rate limiting implemented.
+Any endpoint that can send emails should have strict rate limiting implemented.
