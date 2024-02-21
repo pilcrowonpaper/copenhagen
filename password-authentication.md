@@ -21,7 +21,7 @@
 
 ### Checking for compromised passwords
 
-A free service called haveibeenpwned can be used to check a password against past leaks. Hash the password with SHA-1 (hex encoded) and send the first 5 characters.
+A free service called [haveibeenpwned](https://haveibeenpwned.com/API/v3) can be used to check a password against past leaks. Hash the password with SHA-1 (hex encoded) and send the first 5 characters.
 
 ```
 GET https://api.pwnedpasswords.com/range/12345
@@ -43,7 +43,7 @@ In the most basic form, hashing is a one way process to generate a unique repres
 
 Hashing ensures that if you suffer a data breach, hackers won't be able to get the original password. This is especially important if the breach was limited in scope. Even if they were only able to read the user table, they'll effectively have access to everything once they get hold of user passwords. More importantly, however, it protects your users from further harm. Users often reuse passwords. With leaked passwords, hackers can gain access to user accounts in other applications as well.
 
-However, a big issue with passwords is that they're aren't truly random. Technically there are 62^8 possible 8 character, alphanumeric passwords, but reality is that most of the passwords use common words and names with maybe some numbers at the end. This significantly reduces the number of combinations to test when brute-forcing passwords. 
+However, a big issue with passwords is that they're aren't truly random. Technically there are 62^8 possible 8 character alphanumeric passwords, but reality is that most passwords use common words and names with maybe some numbers at the end. This significantly reduces the number of combinations to test when brute-forcing passwords. 
 
 As such, slow hashing algorithms specifically designed for passwords are used. Common hashing algorithms like SHA-256 are designed to be fast as possible.
 
@@ -56,10 +56,13 @@ hash = hashPassword(password + salt) + salt
 
 Another option is peppering where you use a secret key when hashing the password. Whereas in salts are stored alongside the hashes, the secret key is stored in a separate location. Rolling your own hashing mechanism can be a bad idea so this should only be done if the algorithm you use supports it.
 
-When comparing password hashes, use constant time comparison instead of `==`. This ensures your application is not vulnerable to timing-based attacks, where an attacker can guess passwords using how long it took to compare the password with the hash. Most languages provide this out-of-the-box in the standard library.
+When comparing password hashes, use constant time comparison instead of `==`. This ensures your application is not vulnerable to timing-based attacks, where an attacker can extract information using how long it took to compare the password with the hash.
 
 ```go
-import "crypto/argon2"
+import (
+	"crypto/subtle"
+	"golang.org/x/crypto/argon2"
+)
 
 var storedHash []byte
 var password []byte
@@ -71,6 +74,8 @@ if (subtle.ConstantTimeCompare(hash, storedHash)) {
 ```
 
 Argon2id should be your first choice, followed by Scrypt, and then Bcrypt for legacy systems.
+
+Password hashing is resource intensive and is vulnerable to denial-of-service (DoS) attacks.
 
 ### Argon2id
 
@@ -99,22 +104,22 @@ The work factor should be at minimum 10. Bcrypt has a maximum input length of 72
 
 ## Brute-force attacks
 
-Passwords are susceptible to brute force attacks. There are mainly 2 approaches to brute-forcing:
+Passwords are susceptible to brute-force attacks. There are mainly 2 approaches to brute-forcing:
 
 1. The attacker tries a bunch of common passwords.
 2. The attacker targets specific accounts using leaked passwords (credential stuffing).
 
 [Multi-factor authentication (MFA)](/mfa.md) is the best defense against brute-force attacks. While it doesn't prevent brute-force attacks themselves, it does make it near pointless to do. Users should be recommended to enable MFA and it should be required for security-critical applications.
 
-IP-based throttling should always be implemented. A basic example is to block all attempts from an IP address for 10 minutes after they fail 10 consecutive attempts. Other ideas include increasing the lockout period, and gradually allowing new attempts at a set interval after a lockout. This also prevents DOS attacks as password hashing is resource-intensive. An identifier-based throttling can also be implemented on top of IP-based throttling, though this can introduce denial-of-service (DoS) vulnerabilities (see [device cookies](https://owasp.org/www-community/Slow_Down_Online_Guessing_Attacks_with_Device_Cookies)).
+IP-based throttling should always be implemented. A basic example is to block all attempts from an IP address for 10 minutes after they fail 10 consecutive attempts. Other ideas include increasing the lockout period on each lockout, and gradually allowing new attempts at a set interval after a lockout. This also prevents DOS attacks as password hashing is resource-intensive. An identifier-based throttling can also be implemented on top of IP-based throttling, though this can introduce DoS vulnerabilities (see [device cookies](https://owasp.org/www-community/Slow_Down_Online_Guessing_Attacks_with_Device_Cookies)).
 
-Another layer of security you can implement is bot detection via tests like Captchas.
+Another layer of security you can implement is bot detection using tests like Captchas.
 
 Finally, ensure a certain strength of passwords for users. Make sure passwords aren't weak and that they haven't been part of previous leaks. See the [Password validation](#password-validation) section.
 
 ## Error handling
 
-As a good rule of thumb, error messages should be vague and generic. For example, a login form should display "Incorrect username or password" instead of "Incorrect username" or "Incorrect password." However, if your users' usernames or emails are public knowledge, it may make more sense to return a more specific error message. In most cases, anyone can already determine if an email address is valid by checking it in the registration form.
+As a good rule of thumb, error messages should be vague and generic. For example, a login form should display "Incorrect username or password" instead of "Incorrect username" or "Incorrect password." However, if your users' usernames or emails are public knowledge, it may make more sense to return a more specific error message. In most cases, anyone can already determine if an email address or username is valid by checking it in the registration form.
 
 Even when returning a generic message, it may be possible to determine if a user exists or not by checking the response times of the login form. For example, if you only validate the password when the username is valid.
 

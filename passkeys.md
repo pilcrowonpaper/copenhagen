@@ -7,17 +7,17 @@
 
 ## Overview
 
-Passkeys are built on top the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allows applications to authenticate users with in-device authentication methods, including biometrics and the device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords, which often leads to easily guessable passwords and password reuse. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa.md).
+Passkeys are built on top the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allows applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa.md).
 
 Passkeys are based on public key cryptography, where each user has a public-private key pair. The private key is stored in the user's device, while the public key is stored in your application. The device creates a signature with the private key and your application can use the public key to verify it.
 
 ## Challenge
 
-Each attestation and assertion has a challenge associated to it. A challenge is a randomly generated single-use [token](/server-side-tokens.md) stored in the server for preventing replay attacks. The recommended minimum length is 16 bytes.
+Each attestation and assertion has a challenge associated to it. A challenge is a randomly generated single-use [token](/server-side-tokens.md) stored in the server for preventing replay attacks. The recommended minimum entropy is 16 bytes.
 
 ## Registration
 
-In the client, get a new challenge from the server and create a new credential with the [Web Authentication API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API). This will prompt the user to authenticate with their fingerprint, etc. Browsers such as Safari will only allow you to call this method if it was initiated by a user interaction (button click).
+In the client, get a new challenge from the server and create a new credential with the [Web Authentication API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API). This will prompt the user to authenticate with their device. Browsers such as Safari will only allow you to call this method if it was initiated by a user interaction (button click).
 
 ```ts
 const publicKeyCredential: PublicKeyCredential = await navigator.credentials.create({
@@ -53,7 +53,7 @@ const credentialId: string = publicKeyCredential.id;
 
 The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1_5 (RS256) to support a more wider range of devices but device that only supports it is rare.
 
-The public key, client data, authenticator data, credential ID, and the challenge is sent to the server for verification. A simple way to send binary data is to encode with base64 and using JSON.
+The public key, client data, authenticator data, credential ID, and the challenge is sent to the server for verification. A simple way to send binary data is by encoding it with base64.
 
 The first step is to validate the challenge. Make sure to delete the challenge from storage as it is single-use. Next, check the client data and authenticator data. The origin is the domain your application is hosted on, including the protocol and port, and the relying party ID is the domain without the protocol or port.
 
@@ -65,7 +65,6 @@ import (
 	"encoding/json"
 	"errors"
 )
-
 
 var challenge []byte
 
@@ -111,7 +110,7 @@ Optionally, validate the attestation statement to verify that the attestation ca
 
 The authenticator data also includes a signature counter that is incremented every time a new signature is generated, which can be used to detect cloned authenticators. However, for passkeys specifically, this is not necessary as credentials are designed to be exported and shared.
 
-Finally, check if the public key is a valid public key, and the user can be created with their public key and the credential ID. The public key is in the SubjectPublicKeyInfo format. If you support multiple algorithms, you can parse the public key to get the algorithm identifier.
+Finally, check if the public key is valid, and create a new user with their public key and the credential ID. The public key is in the SubjectPublicKeyInfo format. If you support multiple algorithms, you can parse the public key to get the algorithm identifier.
 
 ## Authentication
 

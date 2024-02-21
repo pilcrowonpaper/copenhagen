@@ -24,7 +24,7 @@ TOTP is defined in [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238), wh
 
 Standard TOTP uses an authenticator app, usually installed on the user's mobile device, to generate a code for the user.
 
-Each user has a secret key. This is shared with the user's authenticator app with a QR code. Using that secret and the current time, the authenticator app can generate a new OTP. Your app can now ask for the current OTP and it can validate it by also generating one using the same parameters. Since the current time is used to generate the code, each code is only valid for a set period (usually 30 seconds).
+Each user has a secret key. This is shared with the user's authenticator app with a QR code. Using that secret and the current time, the authenticator app can generate a new OTP. Your app asks for the current OTP and it can validate it by generating one using the same parameters. Since the current time is used to generate the code, each code is only valid for a set period (usually 30 seconds).
 
 ### Generate QR code
 
@@ -65,16 +65,11 @@ func generateTOTP(secret []byte) {
 	binary.BigEndian.PutUint64(buf, uint64(counter))
 	mac.Write(buf)
 	HS := mac.Sum(nil)
-	Snum := truncate(HS)
+	offset := HS[19] & 0x0f
+	Snum := binary.BigEndian.Uint32(HS[offset:offset+4]) & 0x7fffffff
 	D := Snum % int(math.Pow(10, float64(digits)))
 	// Pad "0" to make it 6 digits.
 	return fmt.Sprintf("%06d", D)
-}
-
-func truncate(HS []byte) int {
-	offset := HS[19] & 0x0f
-	Snum := binary.BigEndian.Uint32(HS[offset:offset+4]) & 0x7fffffff
-	return int(Snum)
 }
 ```
 
@@ -94,6 +89,6 @@ Passkeys allow you to use in-device authentication methods, such as biometrics a
 
 ## Recovery codes
 
-If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use codes that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes can only have 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented.
+If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use passwords that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes must be generated using a cryptographically-secure random generator. They can be generated with only 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented. They should also be hashed with SHA-256 before storage.
 
 These codes should be provided when the user first sets up MFA and the user should be able to download them anytime if they have access to one of their second factors.

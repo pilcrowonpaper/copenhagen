@@ -12,12 +12,11 @@
 
 CSRF attacks allow an attacker to make authenticated requests on behalf of users when credentials are stored in cookies.
 
-When a client makes a cross-origin request, the browser sends a preflight request to check whether the request is allowed (CORS). However, for certain "simple" requests, including form submissions, this step is omitted. And since cookies are automatically included, it allows a malicious actor to make requests as the authenticated user without ever directly stealing the token. The [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) prohibits cross-origin clients from reading responses by default, but the request still goes through.
+When a client makes a cross-origin request, the browser sends a preflight request to check whether the request is allowed (CORS). However, for certain "simple" requests, including form submissions, this step is omitted. And since cookies are automatically included even for cross-origin requests, it allows a malicious actor to make requests as the authenticated user without ever directly stealing the token from any domain. The [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) prohibits cross-origin clients from reading responses by default, but the request still goes through.
 
-For example, if you are signed into `bank.com`, your session cookie will be sent alongside this form submission.
+For example, if you are signed into `bank.com`, your session cookie will be sent alongside this form submission even if the form is hosted on a different domain.
 
 ```html
-<!-- https://scam.com -->
 <form action="https://bank.com/send-money" method="post">
 	<input name="recipient" value="attacker" />
 	<input name="value" value="$100" />
@@ -46,7 +45,7 @@ While requests between 2 totally different domains are considered as both cross-
 
 CSRF can be prevented by only accepting POST and POST-like requests made by browsers from a trusted origin.
 
-Protection must be implemented for all routes that deal with forms. If your application does not currently use forms, it may still be a good idea to at least [check the `Origin` header](#origin-header) to prevent future issues.
+Protection must be implemented for all routes that deal with forms. If your application does not currently use forms, it may still be a good idea to at least [check the `Origin` header](#origin-header) to prevent future issues. It's also a generally good idea to only modify resources using POST and POST-like methods (PUT, DELETE, etc).
 
 For the common token based approach, the token should not be single-use (e.g. a new token for every form submission) as it will break with a single back button. It is also crucial that your pages have a strict cross-origin resource sharing (CORS) policy. If `Access-Control-Allow-Credentials` is not strict, a malicious site can send a GET request to get a HTML form with a valid CSRF token.
 

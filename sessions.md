@@ -13,9 +13,9 @@
 
 Throughout a user's visit to your website, they will make multiple requests to your server. If you need to persist state, such as user preference, across those requests, HTTP doesn't provide a mechanism for it. It's a stateless protocol.
 
-Sessions are a way to persist state in the server. It is especially useful for managing authentication state, such as the client's identity and permissions. We can assign each session with a unique ID and store it on the server to use it as a token. Then the client can associate the request with a session by sending the session ID with it. To implement authentication, we can simply store the user alongside the session.
+Sessions are a way to persist state in the server. It is especially useful for managing authentication state, such as the client's identity. We can assign each session with a unique ID and store it on the server to use it as a token. Then the client can associate the request with a session by sending the session ID with it. To implement authentication, we can simply store user data alongside the session.
 
-It's important that the session ID is sufficiently long and random, or else someone could impersonate other users by stealing or guessing their session IDs. See the [Server-side tokens](/server-side-tokens.md) guide for generating secure session IDs. Session IDs can be hashed before storage to provide an extra level of security.
+It's important that the session ID is sufficiently long and random, or else someone could impersonate other users by just guessing their session IDs. See the [Server-side tokens](/server-side-tokens.md) guide for generating secure session IDs. Session IDs can be hashed before storage to provide an extra level of security.
 
 Depending on your application, you may only have to manage sessions for authenticated users, or for both authenticated and unauthenticated users. You can even manage 2 different kinds of sessions - one for auth and another for non-auth related state.
 
@@ -54,13 +54,13 @@ Consider tracking the user agent (device) and IP address linked to the session t
 
 ## Session invalidation
 
-Sessions can be invalidated by deleting it from storage.
+Sessions can be invalidated by deleting it from both server and client storage.
 
-When the user signs out, invalidate the current session, or for security-critical applications, invalidate all sessions belonging to that user. Delete their session cookie by setting a blank cookie that immediately expires.
+When the user signs out, invalidate the current session, or for security-critical applications, invalidate all sessions belonging to that user. 
 
-All sessions of a user should also be invalidated when they gain new permissions (email verification, new role, etc) or change passwords.
+All sessions of the user should also be invalidated when they gain new permissions (email verification, new role, etc) or change passwords.
 
-## Session storage
+## Client storage
 
 The client should store session ID in the user's device to be used for subsequent requests. The browser mainly provides 2 way to store data - cookies and the Web Storage API. Cookies should be preferred for websites as they're automatically included in requests by the browser.
 
@@ -74,7 +74,7 @@ Session cookies should have the following attributes:
 - `Max-Age` or `Expires`: Must be defined to persist cookies
 - `Path=/`: Cookies can be accessed from all routes
 
-[CSRF protection](/csrf.md) must also be implemented when using cookies, and using the `SameSite` flag is not sufficient. Using cookies does not automatically protect your users from cross-site scripting attacks (XSS). While the session ID can't be read directly, authenticated requests can still be made as browsers automatically include cookies in requests. 
+[CSRF protection](/csrf.md) must be implemented when using cookies, and using the `SameSite` flag is not sufficient. Using cookies does not automatically protect your users from cross-site scripting attacks (XSS) as well. While the session ID can't be read directly, authenticated requests can still be made as browsers automatically include cookies in requests. 
 
 The maximum expiration for a cookie is anywhere between 1 and 2 years. If you plan for the session to be long-lived, continuously set the cookie on a set interval (e.g. when you extend the session expiration). 
 
@@ -90,6 +90,6 @@ Session tokens can be sent with the request using the `Authorization` header for
 
 Applications that maintain sessions for both authenticated and unauthenticated users and reuses the current session when a user signs in, are vulnerable to session fixations attacks.
 
-Say an application allows the session ID to be sent inside the URL as a query parameter. If an attacker shares a link to the sign in page with a session ID included, and the user signs in, the attacker can now impersonate that user with that session ID. A similar attack can be done if the application accepts session IDs in forms or cookies, though the latter requires an XSS vulnerability to exploit.
+Say an application allows the session ID to be sent inside the URL as a query parameter. If an attacker shares a link to the sign in page with a session ID already included and the user signs in, the attacker now has a valid session ID to impersonate that user. A similar attack can be done if the application accepts session IDs in forms or cookies, though the latter requires an XSS vulnerability to exploit.
 
 This can be avoided by only accepting session IDs via cookies and request headers, and always creating a new session when the user signs in.

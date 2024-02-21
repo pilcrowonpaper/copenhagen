@@ -10,7 +10,7 @@
 
 ## Overview
 
-OAuth is a widely used protocol for authorization. It's what's behind "Sign in with Google" and "Sign in with GitHub." It allows users to grant access to their resources on an external service, like GitHub and Google, to your application without sharing their credentials. Instead of implementing a password based auth, we can replace it with OAuth to let a third party service handle authentication. You can then get the user's profile and use that to create users and sessions.
+OAuth is a widely used protocol for authorization. It's what's behind "Sign in with Google" and "Sign in with GitHub." It allows users to grant access to their resources on an external service, like Google, to your application without sharing their credentials. Instead of implementing a password based auth, we can replace it with OAuth to let a third party service handle authentication. You can then get the user's profile and use that to create users and sessions.
 
 In a basic OAuth flow, the user is redirected to a third party service, the service authenticates the user, and the user is redirected back to your application. An access token for the user is made available which allows you to request resources on behalf of the user.
 
@@ -37,7 +37,7 @@ The state is used to ensure the user initiating the process and the one that's r
 
 Your server must keep track of the state associated with each attempt. One simple approach is to store it as a cookie with `HttpOnly`, `SameSite=Lax`, `Secure`, and `Path=/` attributes. You may also assign the state to the current session.
 
-You may also define a `scope` parameter to request access to additional resources. If you have multiple scopes, they should be separated by spaces.
+You can define a `scope` parameter to request access to additional resources. If you have multiple scopes, they should be separated by spaces.
 
 ```
 &scope=email%20identity
@@ -51,13 +51,13 @@ You can create a "Sign in" button by adding a link to the login endpoint.
 
 ## Validate authorization code
 
-The user will be redirected to the callback endpoint (as defined in `redirect_uri`) with a one-time authorization code, which is included as a query parameter. This code is then exchanged for an access token. 
+The user will be redirected to the callback endpoint (as defined in `redirect_uri`) with a single-use authorization code, which is included as a query parameter. This code is then exchanged for an access token. 
 
 ```
 https://example.com/login/github/callback?code=<CODE>&state=<STATE>
 ```
 
-If you added a state to the authorization URL, the redirect request will include a `state` parameter. It is critical to check that it matches the state associated with the session. Return an error if the state is missing or if they don't match. A common mistake is forgetting to check whether the `state` parameter exists in the URL.
+If you added a state to the authorization URL, the redirect request will include a `state` parameter. It is critical to check that it matches the state associated with the attempt. Return an error if the state is missing or if they don't match. A common mistake is forgetting to check whether the `state` parameter exists in the URL.
 
 The code is sent to the OAuth provider's token endpoint via an `application/x-www-form-urlencoded` POST request.
 
@@ -100,7 +100,7 @@ The request will return an access token, which can then be used to get the user'
 { "access_token": "<ACCESS_TOKEN>" }
 ```
 
-For example, using the access token, you can get their GitHub profile and store their GitHub user ID, which allows you to check whether a user is already registered. Be aware that the email address provided by the OAuth provider may not be verified. You may need to manually verify the email or block users without a verified email.
+For example, using the access token, you can get their GitHub profile and store their GitHub user ID, which will allow you to get their registered account when they sign in again. Be aware that the email address provided by the OAuth provider may not be verified. You may need to manually verify user emails or block users without a verified email.
 
 The access token itself should never be used as a replacement for sessions.
 
@@ -110,7 +110,7 @@ PKCE was introduced in [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636)
 
 PKCE can replace state entirely, as both protects against CSRF attacks, but it may be required by your OAuth provider.
 
-A new code verifier must be generated on each request. It should be generated using a cryptographically-secure random generator and have at least 112 bits of entropy (256 bits recommended by the RFC). Similar to state, your application must keep track of the code verifier associated with each attempt (using cookies or sessions). A base64url encoded (no padding) SHA256 hash of it called a code challenge is included the authorization URL.
+A new code verifier must be generated on each request. It should be generated using a cryptographically-secure random generator and have at least 112 bits of entropy (256 bits recommended by the RFC). Similar to state, your application must keep track of the code verifier associated with each attempt (using cookies or sessions). A base64url (no padding) encoded SHA256 hash of it called a code challenge is included the authorization URL.
 
 ```go
 var codeVerifier string

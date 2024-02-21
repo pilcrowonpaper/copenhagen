@@ -6,7 +6,7 @@
 
 ## Overview
 
-Server-side tokens refer to any long, random string that is stored in the server, usually in a database or memory storage, used for authentication and verification. A token can be validated by checking if it exists in storage. Examples include session IDs, email verification tokens, and access tokens.
+Server-side tokens refer to any long, random string that is stored in the server, usually in a database or in-memory (e.g. Redis), used for authentication and verification. A token can be validated by checking if it exists in storage. Examples include session IDs, email verification tokens, and access tokens.
 
 ```
 CREATE TABLE token (
@@ -40,4 +40,4 @@ UUID v4 may fit these requirements (122 bits of entropy), but keep in mind that 
 
 ## Storing tokens
 
-Tokens that requires an extra level of security, such as password reset tokens, should be hashed with SHA-256. SHA-256 can be used instead of a slower algorithm here as the token is sufficient long and random. Tokens can be validated by hashing the incoming token before querying the storage.
+Tokens that requires an extra level of security, such as password reset tokens, should be hashed with SHA-256. SHA-256 can be used instead of a slower algorithm here as the token is sufficiently long and random. Tokens can be validated by hashing the incoming token before querying.
