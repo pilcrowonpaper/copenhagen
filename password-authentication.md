@@ -100,7 +100,11 @@ Recommended minimum parameters:
 
 ### Bcrypt
 
-The work factor should be at minimum 10. Bcrypt has a maximum input length of 72 bytes, and some implementation may have a limit as low as 50 bytes. [See OWASP for details](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#bcrypt).
+The work factor should be at minimum 10.
+
+Bcrypt has a maximum input length of 72 bytes, and some implementation may have a limit as low as 50 bytes. Pre-hashing the password with algorithms like SHA-256/512 is not recommended as some implementations of Bcrypt are not built to handle null bytes. Do not attempt to implement peppering by using HMAC either. Use algorithms like [Argon2id](#argon2id) or [Scrypt](#scrypt) instead if you need to support longer passwords.
+
+[See OWASP for details](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#bcrypt).
 
 ## Brute-force attacks
 
