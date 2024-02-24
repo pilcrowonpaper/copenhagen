@@ -2,6 +2,7 @@
 
 - [Overview](#overview)
 - [Session lifetime](#session-lifetime)
+	- [Sudo mode](#sudo-mode)
 - [Safeguards](#safeguards)
 - [Session invalidation](#session-invalidation)
 - [Session storage](#session-storage)
@@ -47,6 +48,10 @@ func validateSession(sessionId string) (*Session, error) {
 	return session, nil
 }
 ```
+
+### Sudo mode
+
+An alternative to short-lived sessions is to implement long-lived sessions coupled with sudo mode. Sudo mode allows authenticated users to access security-critical components for a limited time by re-authenticating with one of their credentials (passwords, passkeys, TOTP, etc). A simple way to implement this is by keeping track of when the user last used their credentials in each sessions. This approach provides the security benefits of short-lived sessions without annoying frequent users.
 
 ## Safeguards
 
