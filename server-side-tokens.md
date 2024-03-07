@@ -46,3 +46,5 @@ UUID v4 may fit these requirements (122 bits of entropy), but keep in mind that 
 ## Storing tokens
 
 Tokens that require an extra level of security, such as password reset tokens, should be hashed with SHA-256. SHA-256 can be used instead of a slower algorithm here as the token is sufficiently long and random. Tokens can be validated by hashing the incoming token before querying.
+
+Real-life examples of accidental leaks include [Paleohacks](https://www.vpnmentor.com/blog/report-paleohacks-breach/) and [Spoutible](https://www.troyhunt.com/how-spoutibles-leaky-api-spurted-out-a-deluge-of-personal-data/).

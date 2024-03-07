@@ -28,7 +28,7 @@ Each user has a secret key. This is shared with the user's authenticator app wit
 
 ### Generate QR code
 
-HMAC SHA-1 is used to generate TOTPs. The secret key is exactly 160 bits and it must be generated using a cryptographically-secure random generator. Each user must have its own secret and the secret should be stored in your server.
+HMAC SHA-1 is used to generate TOTPs. The secret key is exactly 160 bits and it must be generated using a cryptographically-secure random generator. Each user must have its own secret and the secret should be stored in your server. The secret can be encrypted before storage if you're worried about accidentally leaking your database records. It's important to remember that encrypting data won't protect against attackers who have system-level access to your servers however.
 
 To share the secret, generate a [key URI](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) and encode it into a QR code. The `secret` is base32 encoded.
 
@@ -89,6 +89,6 @@ Passkeys allow you to use in-device authentication methods, such as biometrics a
 
 ## Recovery codes
 
-If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use passwords that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes must be generated using a cryptographically-secure random generator. They can be generated with only 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented. They should also be hashed with SHA-256 before storage.
+If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use passwords that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes must be generated using a cryptographically-secure random generator. They can be generated with only 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented. When storing these codes, you should hash them with your preferred password hashing algorithm (e.g. Argon2id).
 
 These codes should be provided when the user first sets up MFA and the user should be able to download them anytime if they have access to one of their second factors.
