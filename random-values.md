@@ -11,7 +11,7 @@
 
 Pseudo-random generators often provided by the standard math package are fast but predictable. When dealing with cryptography, having access to a strong random generator is essential.
 
-This page describes how to generate random values from randomly generated bits.
+This page describes how to generate random strings and numbers from randomly generated bits.
 
 ## Random strings
 
@@ -100,7 +100,7 @@ func generateRandomUint32(max uint32): uint32 {
 }
 ```
 
-The safest approach is to use rejection sampling, where a random value is repeatedly generated until its under the maximum. To increase the likelihood the value is under the maximum, we can only generate the maximum number bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're gnerating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
+The safest approach is to use rejection sampling, where a random value is repeatedly generated until its under the maximum. To increase the likelihood the value is under the maximum, we can only generate the maximum number bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're generating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
 
 ```go
 import (
@@ -130,17 +130,22 @@ func generateRandomUint64(max *big.Int) uint64 {
 
 ### Random floating-point numbers between 0 and 1
 
-A common approach is to generate a random integer and divide it by a very big number. When doing this, it is crucial that the denominator is large enough, and that the denonimator is a power of 2 to be accurately represented by float64.
+A common approach is to generate a random integer and divide it by a very big number. When doing this, it is crucial that the denominator is large enough, and that the denominator is a power of 2 to be accurately represented by float64.
 
 ```go
 func generateRandomFloat64() float64 {
-	return float64(generateRandomIntger(1<<53)) / (1 << 53)
+	return float64(generateRandomInteger(1<<53)) / (1 << 53)
 }
 ```
 
 Another approach is to generate 52 random bits for the mantissa (float64) and convert that into a float within [0, 1). This will be generally faster since it avoids division.
 
 ```go
+import (
+	"crypto/rand"
+	"math"
+)
+
 func generateRandomFloat64() float64 {
 	bytes := make([]byte, 7)
 	rand.Read(bytes)
@@ -154,7 +159,7 @@ func generateRandomFloat64() float64 {
 
 ## Biases
 
-A very common bias is the modulo bias. For example, if `RANDOM_INT` is an intger in [0, 10), some numbers will appear 3 times (0, 1) while others will appear 2 times (2, 3).
+A very common bias is the modulo bias. For example, if `RANDOM_INT` is an integer in [0, 10), some numbers will appear 3 times (0, 1) while others will appear 2 times (2, 3).
 
 ```
 RANDOM_INT % 4
