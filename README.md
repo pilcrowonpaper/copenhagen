@@ -9,6 +9,7 @@ If you have any suggestions or concerns, consider opening a new issue.
 - [Password authentication](/password-authentication.md)
 - [Email verification](/email-verification.md)
 - [Password reset](/password-reset.md)
+- [Generating random values](/random-values.md)
 - [OAuth](/oauth.md)
 - [Multi-factor authentication (MFA)](/mfa.md)
 - [Passkeys](/passkeys.md)
