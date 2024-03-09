@@ -168,4 +168,4 @@ Account linking allows users to sign in with any of their social accounts and be
 
 ## Other considerations
 
-- [Open redirect](/open-redirect.md).
+- [Open redirect](/open-redirect).

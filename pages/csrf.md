@@ -57,7 +57,7 @@ For the common token based approach, the token should not be single-use (e.g. a 
 
 ### Anti-CSRF tokens
 
-This is a very simple method where each session have a unique CSRF [token](/server-side-tokens.md) associated with it.
+This is a very simple method where each session have a unique CSRF [token](/server-side-tokens) associated with it.
 
 ```html
 <form method="post">
@@ -71,7 +71,7 @@ This is a very simple method where each session have a unique CSRF [token](/serv
 
 If storing the token server-side is not an option, signed double submit cookies is another approach. This is different from the basic double submit cookie in that the token included in the form is signed with a secret.
 
-A new [token](/server-side-tokens.md) is generated and hashed with HMAC SHA-256 using a secret key.
+A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key.
 
 ```go
 func generateCSRFToken() (string, []byte) {

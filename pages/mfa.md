@@ -85,13 +85,13 @@ Throttling must be implemented. A basic example is blocking attempts for 15 to 6
 
 ## SMS
 
-We discourage SMS based MFA as it can be intercepted and unreliable at times. However, it may be more accessible than using authenticator apps. See the [Email verification code](/email-verification.md#email-verification-codes) guide for a guideline on implementing verification codes. The code should be valid for around 5 minutes.
+We discourage SMS based MFA as it can be intercepted and unreliable at times. However, it may be more accessible than using authenticator apps. See the [Email verification code](/email-verification#email-verification-codes) guide for a guideline on implementing verification codes. The code should be valid for around 5 minutes.
 
 Throttling must be implemented. A basic example is blocking attempts for 15 to 60 minutes after the 5th consecutive failed attempt. The user should also be notified to change the password as well.
 
 ## Passkeys
 
-Passkeys allow you to use in-device authentication methods, such as biometrics and pin-codes. See the [Passkeys](/passkeys.md) guide.
+Passkeys allow you to use in-device authentication methods, such as biometrics and pin-codes. See the [Passkeys](/passkeys) guide.
 
 ## Recovery codes
 

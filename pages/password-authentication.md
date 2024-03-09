@@ -119,7 +119,7 @@ Passwords are susceptible to brute-force attacks. There are mainly 2 approaches 
 1. The attacker tries a bunch of common passwords.
 2. The attacker targets specific accounts using leaked passwords (credential stuffing).
 
-[Multi-factor authentication (MFA)](/mfa.md) is the best defense against brute-force attacks. While it doesn't prevent brute-force attacks themselves, it does make it near pointless to do. Users should be recommended to enable MFA and it should be required for security-critical applications.
+[Multi-factor authentication (MFA)](/mfa) is the best defense against brute-force attacks. While it doesn't prevent brute-force attacks themselves, it does make it near pointless to do. Users should be recommended to enable MFA and it should be required for security-critical applications.
 
 IP-based throttling should always be implemented. A basic example is to block all attempts from an IP address for 10 minutes after they fail 10 consecutive attempts. Other ideas include increasing the lockout period on each lockout, and gradually allowing new attempts at a set interval after a lockout. This also prevents DOS attacks as password hashing is resource-intensive. An identifier-based throttling can also be implemented on top of IP-based throttling, though this can introduce DoS vulnerabilities (see [device cookies](https://owasp.org/www-community/Slow_Down_Online_Guessing_Attacks_with_Device_Cookies)).
 
@@ -137,4 +137,4 @@ Even when returning a generic message, it may be possible to determine if a user
 
 - Do not prevent users from copy-pasting passwords as it discourages users from using password managers.
 - Ask for the current password when a user attempts to change their password.
-- [Open redirect](/open-redirect.md).
+- [Open redirect](/open-redirect).

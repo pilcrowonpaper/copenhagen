@@ -28,7 +28,7 @@ For single-use tokens, any retrieval should also guarantee deletion. In SQL for 
 
 ## Generating tokens
 
-Tokens should have at least 112 bits of entropy (120-256 is a good range). For example, you could generate 15 random bytes and encode it with base32 to get a 24 character token. If you generate tokens by choosing random characters one-by-one, you should ensure a similar level of entropy. See the [Generating random values](/random-values.md) page for more information.
+Tokens should have at least 112 bits of entropy (120-256 is a good range). For example, you could generate 15 random bytes and encode it with base32 to get a 24 character token. If you generate tokens by choosing random characters one-by-one, you should ensure a similar level of entropy. See the [Generating random values](/random-values) page for more information.
 
 Tokens must be generated using a cryptographically-secure random generator. Fast, pseudo-random generators like those generally provided by standard math packages should be avoided for this.
 

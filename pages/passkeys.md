@@ -13,13 +13,13 @@ title: "Passkeys"
 
 ## Overview
 
-Passkeys are built on top the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allows applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa.md).
+Passkeys are built on top the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allows applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa).
 
 Passkeys are based on public key cryptography, where each user has a public-private key pair. The private key is stored in the user's device, while the public key is stored in your application. The device creates a signature with the private key and your application can use the public key to verify it.
 
 ## Challenge
 
-Each attestation and assertion has a challenge associated to it. A challenge is a randomly generated single-use [token](/server-side-tokens.md) stored in the server for preventing replay attacks. The recommended minimum entropy is 16 bytes.
+Each attestation and assertion has a challenge associated to it. A challenge is a randomly generated single-use [token](/server-side-tokens) stored in the server for preventing replay attacks. The recommended minimum entropy is 16 bytes.
 
 ## Registration
 
