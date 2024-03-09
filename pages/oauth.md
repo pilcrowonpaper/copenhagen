@@ -4,6 +4,8 @@ title: "OAuth"
 
 # OAuth
 
+## Table of contents
+
 - [Overview](#overview)
 - [Create authorization URL](#create-authorization-url)
 - [Validate authorization code](#validate-authorization-code)

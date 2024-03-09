@@ -4,6 +4,8 @@ title: "Cross-site request forgery (CSRF)"
 
 # Cross-site request forgery (CSRF)
 
+## Table of contents
+
 - [Overview](#overview)
 	- [Cross-site vs cross-origin](#cross-site-vs-cross-origin)
 - [Prevention](#prevention)

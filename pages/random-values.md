@@ -4,6 +4,8 @@ title: "Generating random values"
 
 # Generating random values
 
+## Table of contents
+
 - [Overview](#overview)
 - [Random strings](#random-strings)
   - [Custom character set](#custom-character-set)

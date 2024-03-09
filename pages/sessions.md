@@ -4,6 +4,8 @@ title: "Sessions"
 
 # Sessions
 
+## Table of contents
+
 - [Overview](#overview)
 - [Session lifetime](#session-lifetime)
 	- [Sudo mode](#sudo-mode)

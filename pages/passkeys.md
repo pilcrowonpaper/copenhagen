@@ -4,6 +4,8 @@ title: "Passkeys"
 
 # Passkeys
 
+## Table of contents
+
 - [Overview](#overview)
 - [Challenge](#challenge)
 - [Registration](#registration)

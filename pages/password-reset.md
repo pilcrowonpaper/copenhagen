@@ -4,6 +4,8 @@ title: "Password reset"
 
 # Password reset
 
+## Table of contents
+
 - [Overview](#overview)
 - [Password reset links](#password-reset-links)
 - [Rate limiting](#rate-limiting)

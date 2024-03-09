@@ -4,6 +4,8 @@ title: "Server-side tokens"
 
 # Server-side tokens
 
+## Table of contents
+
 - [Overview](#overview)
 - [Generating tokens](#generating-tokens)
 - [Storing tokens](#storing-tokens)

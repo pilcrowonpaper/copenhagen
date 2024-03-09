@@ -4,6 +4,8 @@ title: "Password authentication"
 
 # Password authentication
 
+## Table of contents
+
 - [Input validation](#input-validation)
 	- [Checking for compromised passwords](#checking-for-compromised-passwords)
 - [Password storage](#password-storage)

@@ -4,6 +4,8 @@ title: "Multi-factor authentication (MFA)"
 
 # Multi-factor authentication (MFA)
 
+## Table of contents
+
 - [Overview](#overview)
 - [Time-based one time passwords (TOTP)](#time-based-one-time-passwords-totp)
 	- [Generate QR code](#generate-qr-code)
