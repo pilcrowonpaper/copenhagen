@@ -60,7 +60,7 @@ You can create a "Sign in" button by adding a link to the login endpoint.
 The user will be redirected to the callback endpoint (as defined in `redirect_uri`) with a single-use authorization code, which is included as a query parameter. This code is then exchanged for an access token. 
 
 ```
-https://example.com/login/github/callback?code=<CODE>&state=<STATE>
+https://example.com/login/github/callback?code=CODE&state=STATE
 ```
 
 If you added a state to the authorization URL, the redirect request will include a `state` parameter. It is critical to check that it matches the state associated with the attempt. Return an error if the state is missing or if they don't match. A common mistake is forgetting to check whether the `state` parameter exists in the URL.
