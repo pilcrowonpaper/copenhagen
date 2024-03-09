@@ -15,7 +15,7 @@ This page describes how to generate random strings and numbers from randomly gen
 
 ## Random strings
 
-The easiest and safest way to generate random strings is to generate random bytes and encode it with base16 (hex), base32, or base64 encoding schemes. This ensures no biases are introduced.
+The easiest and safest way to generate random strings is to generate random bytes and encode it with base16 (hex), base32, or base64 encoding schemes.
 
 ```go
 import (
@@ -49,7 +49,7 @@ func generateRandomString() string {
 }
 ```
 
-If not, you would need a high-quality [random number generator](#random-integers).
+If not, you would need a high-quality [random number generator](#random-integers) to generate an integer within a custom range.
 
 ```go
 const alphabet = "abcdefg"
@@ -57,7 +57,7 @@ const alphabet = "abcdefg"
 func generateRandomString() string {
 	var result string
 	for i := 0; i < 12; i ++ {
-		result += string(alphabet[generateRandomInt(0, 7)])
+		result += string(alphabet[generateRandomInt(0, len(alphabet))])
 	}
 	return result
 }
@@ -81,7 +81,8 @@ import (
 	"encoding/binary"
 )
 
-// Generates a random integer between [0, max)
+// Generates a random integer between [0, max).
+// `max` should not be a very large number.
 func generateRandomUint32(max uint32): uint32 {
 	var max uint32 = 10
 	bytes := make([]byte, 4)
@@ -100,7 +101,7 @@ func generateRandomUint32(max uint32): uint32 {
 }
 ```
 
-The safest approach is to use rejection sampling, where a random value is repeatedly generated until its under the maximum. To increase the likelihood the value is under the maximum, we can only generate the maximum number bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're generating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
+The safest approach then is to use rejection sampling, where a random value is repeatedly generated until its under the maximum. To increase the likelihood the random value is under the maximum, we can only generate the maximum number bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're generating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
 
 ```go
 import (
@@ -159,7 +160,7 @@ func generateRandomFloat64() float64 {
 
 ## Biases
 
-A very common bias is the modulo bias. For example, if `RANDOM_INT` is an integer in [0, 10), some numbers will appear 3 times (0, 1) while others will appear 2 times (2, 3).
+A very common bias seen in the wild is the modulo bias. For example, if `RANDOM_INT` is an integer in [0, 10), some numbers will appear 3 times (0, 1) while others will appear 2 times (2, 3).
 
 ```
 RANDOM_INT % 4
@@ -177,7 +178,7 @@ For example, if we use 8 random bits and the maximum is 100, the approximate bia
 1 / ( 8 - LOG2(100) ) ≈ 1 / (8-6.4) ≈ 0.6
 ```
 
-Using floating point numbers can introduce bias as well. In this example, `RANDOM_FLOAT` is within [0, 1) so the output will be [0, 5).
+Multiplying the maximum with a random floating point number can introduce bias as well. In this example, `RANDOM_FLOAT` is within [0, 1) so the output will be [0, 5).
 
 ```
 FLOOR( RANDOM_FLOAT * 5 )
