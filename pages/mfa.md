@@ -1,3 +1,7 @@
+---
+title: "Multi-factor authentication (MFA)"
+---
+
 # Multi-factor authentication (MFA)
 
 - [Overview](#overview)

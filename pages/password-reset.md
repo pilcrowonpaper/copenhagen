@@ -1,3 +1,7 @@
+---
+title: "Password reset"
+---
+
 # Password reset
 
 - [Overview](#overview)

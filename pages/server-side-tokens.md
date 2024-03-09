@@ -1,3 +1,7 @@
+---
+title: "Server-side tokens"
+---
+
 # Server-side tokens
 
 - [Overview](#overview)

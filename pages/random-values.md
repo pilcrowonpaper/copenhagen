@@ -1,3 +1,7 @@
+---
+title: "Generating random values"
+---
+
 # Generating random values
 
 - [Overview](#overview)

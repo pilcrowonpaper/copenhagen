@@ -1,3 +1,7 @@
+---
+title: "Cross-site request forgery (CSRF)"
+---
+
 # Cross-site request forgery (CSRF)
 
 - [Overview](#overview)

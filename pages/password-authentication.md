@@ -1,3 +1,7 @@
+---
+title: "Password authentication"
+---
+
 # Password authentication
 
 - [Input validation](#input-validation)

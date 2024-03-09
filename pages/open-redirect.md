@@ -1,3 +1,7 @@
+---
+title: "Open redirect"
+---
+
 # Open redirect
 
 Open redirect is a vulnerability where your application allows a user to control a redirect. 
