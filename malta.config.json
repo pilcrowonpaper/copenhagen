@@ -7,17 +7,17 @@
 		{
 			"title": "Guides",
 			"pages": [
-				["Server-side tokens", "/server-side-tokens.md"],
-				["Sessions", "/sessions.md"],
-				["Password authentication", "/password-authentication.md"],
-				["Email verification", "/email-verification.md"],
-				["Password reset", "/password-reset.md"],
-				["Generating random values", "/random-values.md"],
-				["OAuth", "/oauth.md"],
-				["Multi-factor authentication (MFA)", "/mfa.md"],
-				["Passkeys", "/passkeys.md"],
-				["Cross-site request forgery (CSRF)", "/csrf.md"],
-				["Open redirect", "/open-redirect.md"]
+				["Server-side tokens", "/server-side-tokens"],
+				["Sessions", "/sessions"],
+				["Password authentication", "/password-authentication"],
+				["Email verification", "/email-verification"],
+				["Password reset", "/password-reset"],
+				["Generating random values", "/random-values"],
+				["OAuth", "/oauth"],
+				["Multi-factor authentication (MFA)", "/mfa"],
+				["Passkeys", "/passkeys"],
+				["Cross-site request forgery (CSRF)", "/csrf"],
+				["Open redirect", "/open-redirect"]
 			]
 		},
 		{
