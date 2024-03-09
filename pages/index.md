@@ -8,4 +8,4 @@ The Copenhagen Book provides a general guideline on implementing auth in web app
 
 If you have any suggestions or concerns, consider opening a new issue.
 
-> Created by [Pilcrow](https://github.com/pilcrowOnPaper)
+*Created by [Pilcrow](https://github.com/pilcrowOnPaper)*
