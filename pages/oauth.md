@@ -34,9 +34,9 @@ Using GitHub as an example, the first step is to create a GET endpoint (login en
 ```
 https://github.com/login/oauth/authorize?
 response_type=code
-&client_id=<CLIENT_ID>
-&redirect_uri=<CALLBACK_ENDPOINT>
-&state=<STATE>
+&client_id=CLIENT_ID
+&redirect_uri=CALLBACK_ENDPOINT
+&state=STATE
 ```
 
 The state is used to ensure the user initiating the process and the one that's redirected back (in the next section) are the same user. As such, a new state must be generated on each request. While it is not strictly required by the spec, it is highly recommended and may be required depending on the provider. It should be generated using a cryptographically-secure random generator and have at least 112 bits of entropy. State can also be used to pass data from the login endpoint to the callback endpoint, though a cookie can just be used instead. 
@@ -67,10 +67,10 @@ If you added a state to the authorization URL, the redirect request will include
 
 The code is sent to the OAuth provider's token endpoint via an `application/x-www-form-urlencoded` POST request.
 
-```
+```none
 POST https://github.com/login/oauth/access_token
 Accept: application/json
-Authorization: Basic <CREDENTIALS>
+Authorization: Basic CREDENTIALS
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=authorization_code
