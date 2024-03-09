@@ -1,0 +1,31 @@
+{
+	"name": "The Copenhagen Book",
+	"description": "A basic guideline on implementing auth for the web.",
+	"domain": "https://thecopenhagenbook.com",
+	"twitter": "@pilcrowonpaper",
+	"sidebar": [
+		{
+			"title": "Guides",
+			"pages": [
+				["Server-side tokens", "/server-side-tokens.md"],
+				["Sessions", "/sessions.md"],
+				["Password authentication", "/password-authentication.md"],
+				["Email verification", "/email-verification.md"],
+				["Password reset", "/password-reset.md"],
+				["Generating random values", "/random-values.md"],
+				["OAuth", "/oauth.md"],
+				["Multi-factor authentication (MFA)", "/mfa.md"],
+				["Passkeys", "/passkeys.md"],
+				["Cross-site request forgery (CSRF)", "/csrf.md"],
+				["Open redirect", "/open-redirect.md"]
+			]
+		},
+		{
+			"title": "Resources",
+			"pages": [
+				["GitHub repository", "https://github.com/pilcrowonpaper/copenhagen"],
+				["OWASP", "https://twitter.com/pilcrowonpaper"]
+			]
+		}
+	]
+}
