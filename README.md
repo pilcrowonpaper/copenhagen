@@ -4,16 +4,4 @@ The Copenhagen Book provides a general guideline on implementing auth in web app
 
 If you have any suggestions or concerns, consider opening a new issue.
 
-- [Server-side tokens](/server-side-tokens.md)
-- [Sessions](/sessions.md)
-- [Password authentication](/password-authentication.md)
-- [Email verification](/email-verification.md)
-- [Password reset](/password-reset.md)
-- [Generating random values](/random-values.md)
-- [OAuth](/oauth.md)
-- [Multi-factor authentication (MFA)](/mfa.md)
-- [Passkeys](/passkeys.md)
-- [Cross-site request forgery (CSRF)](/csrf.md)
-- [Open redirect](/open-redirect.md)
-
-Make sure to always use HTTPS over HTTP!
+**[Website](https://thecopenhagenbook.com)**
