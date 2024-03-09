@@ -49,7 +49,7 @@ In the most basic form, hashing is a one way process to generate a unique repres
 
 Hashing ensures that if you suffer a data breach, hackers won't be able to get the original password. This is especially important if the breach was limited in scope. Even if they were only able to read the user table, they'll effectively have access to everything once they get hold of user passwords. More importantly, however, it protects your users from further harm. Users often reuse passwords. With leaked passwords, hackers can gain access to user accounts in other applications as well.
 
-However, a big issue with passwords is that they're aren't truly random. Technically there are 62^8 possible 8 character alphanumeric passwords, but reality is that most passwords use common words and names with maybe some numbers at the end. This significantly reduces the number of combinations to test when brute-forcing passwords. 
+However, a big issue with passwords is that they aren't truly random. Technically there are 62^8 possible 8 character alphanumeric passwords, but the reality is that most passwords use common words and names, maybe with some numbers at the end. This significantly reduces the number of combinations to test when brute-forcing passwords.
 
 As such, slow hashing algorithms specifically designed for passwords are used. Common hashing algorithms like SHA-256 are designed to be fast as possible.
 
