@@ -126,7 +126,7 @@ The `Referer` header is a similar header introduced before the `Origin` header. 
 
 ## SameSite cookie attribute
 
-Session cookies should have a `SameSite` flag. This flag determines when the browser includes the cookie in requests. `SameSame=Lax` cookies will not be sent on cross-site, non-GET requests, while `SameSite=Strict` cookies will not be sent on any cross-site requests. We recommend using `Lax` as the default as `Strict` cookies will not be sent when a user accesses your website via an external link.
+Session cookies should have a `SameSite` flag. This flag determines when the browser includes the cookie in requests. `SameSite=Lax` cookies will not be sent on cross-site, non-GET requests, while `SameSite=Strict` cookies will not be sent on any cross site requests. We recommend using `Lax` as the default as `Strict` cookies will not be sent when a user accesses your website via an external link.
 
 If you set the value to `Lax`, it is crucial that your application does not use GET requests for modifying resources. Browser support for the `SameSite` flag shows it is currently available to 96% of web users. It’s important to note that the flag only protects against *cross-site* request forgery (not *cross-origin* request forgery), and generally shouldn’t be your only layer of defense.
 
