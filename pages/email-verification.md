@@ -4,7 +4,7 @@ title: "Email verification"
 
 # Email verification
 
-If your application requires user email addresses to be unique, email verification is a must. It discourages users from entering a random email address and, if password reset is implemented, allows users to take back accounts created with their email address. You may event want to block users from accessing your application's content until they verify their email address.
+If your application requires user email addresses to be unique, email verification is a must. It discourages users from entering a random email address and, if password reset is implemented, allows users to take back accounts created with their email address. You may eventually want to block users from accessing your application's content until they verify their email address.
 
 ## Table of contents
 
@@ -33,13 +33,13 @@ Some email providers, including Google, allow users to specify a tag that will b
 
 One way to verify email is to send a secret code stored in the server to the user's mailbox.
 
-This approach should be preferred over using links. People are increasingly less likely to click on links, and some filters may block emails with them. Using links also limit what device the users can use to create an account (eg. the user doesn't have to their mailbox on their phone).
+This approach should be preferred over using links. People are increasingly less likely to click on links, and some filters may block emails with them. Using links also limits what device the users can use to create an account (eg. the user doesn't have to their mailbox on their phone).
 
-The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically-secure random generator.
+The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically secure random generator.
 
-A single verification code should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Each code should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). The code must be single-use and immediately invalidated after validation. A new verification code should be generated every time the user asks for another email/code. 
+A single verification code should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Each code should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). The code must be single-use and immediately invalidated after validation. A new verification code should be generated every time the user asks for another email/code.
 
-Similar to a regular login form, throttling or rate-limiting based on the user ID must be implemented. A good limit is around 10 attempts per hour. Assuming proper limiting is implemented, the code can be valid for up to 24 hours. You should generate and resend a new code if the user inputted code has expired.
+Similar to a regular login form, throttling or rate-limiting based on the user ID must be implemented. A good limit is around 10 attempts per hour. Assuming proper limiting is implemented, the code can be valid for up to 24 hours. You should generate and resend a new code if the user-inputted code has expired.
 
 All sessions of a user should be invalidated when their email is verified.
 
@@ -53,7 +53,7 @@ https://example.com/verify-email/<TOKEN>
 
 A single token should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Tokens should be single-use and be immediately deleted from storage after verification. The token should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). When a user asks for another verification email, you can resend the previous token instead of generating a new token if that token is still within expiration.
 
-Make sure to set the pages's [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `noreferrer` to protect the token from referer leakage.
+Make sure to set the pages' [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `noreferrer` to protect the token from referer leakage.
 
 All sessions should be invalidated when the email is verified.
 
