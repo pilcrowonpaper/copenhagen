@@ -11,8 +11,8 @@ title: "OAuth"
 - [Validate authorization code](#validate-authorization-code)
 - [Proof key for code exchange (PKCE)](#proof-key-for-code-exchange-pkce-flow)
 - [OpenID Connect (OIDC)](#openid-connect-oidc)
+	- [OpenID Connect Discovery](#openid-connect-discovery)
 - [Account linking](#account-linking)
-- [OpenID Connect Discovery](#openid-connect-discovery)
 - [Other considerations](#other-considerations)
 
 ## Overview
@@ -163,28 +163,19 @@ grant_type=authorization_code
 
 While you can validate the token with a public key, this is not necessary for server-side applications and you can safely assume that the token is valid.
 
-## Account linking
+### OpenID Connect Discovery
 
-Account linking allows users to sign in with any of their social accounts and be authenticated as the same user on your application. It it usually done by checking the email address registered with the provider. If you're using email to link accounts, make sure to validate the user's email. Most providers provide a `is_verified` field or similar in user profiles. Do not assume that the email has been verified unless the provider explicitly mentions it in their documentation. Users without a verified email should be prevented from completing the authentication process and prompted to verify their email first.
-
-## OpenID Connect Discovery
-
-OpenID Connect defines a discovery mechanism that allows clients to dynamically fetch the OpenID Provider's configuration, including the OAuth 2.0 endpoint locations. This eliminates the need to hard-code endpoint URLs in your application. To use OpenID Connect Discovery, your OpenID Provider must have a discovery endpoint available. 
+OpenID Connect defines a [discovery mechanism](https://openid.net/specs/openid-connect-discovery-1_0.html) that allows clients to dynamically fetch the OpenID Provider's configuration, including the OAuth 2.0 endpoint locations. This eliminates the need to hard-code endpoint URLs in your application. To use OpenID Connect Discovery, your OpenID Provider must have a discovery endpoint available. 
 
 The discovery endpoint is a well-known URL that returns a JSON document containing the OpenID Provider's configuration information. Note that not all OAuth providers support OpenID Connect Discovery. Check your provider's documentation to determine if they offer a discovery endpoint. If not, you may still need to manually configure the endpoint URLs in your application.
 
-The well-known URL for the discovery endpoint is:
+The well-known URL has the path `/.well-known/openid-configuration`. For example, Google's Discovery Endpoint looks like this:
 
 ```
-https://example.com/.well-known/openid-configuration
+https://accounts.google.com/.well-known/openid-configuration
 ```
 
-* Replace example.com with your OpenID Provider's domain.
-* Example: [Google's Discovery Endpoint](https://accounts.google.com/.well-known/openid-configuration)
-
-Make an HTTP GET request to the discovery endpoint. The response will be a JSON object containing the OpenID Provider's configuration, including the endpoint URLs for authorization, token exchange, and user info retrieval.
-
-Here's an example of the discovery endpoint response:
+The endpoint will return a JSON object containing the OpenID Provider's configuration, including the endpoint URLs for authorization, token exchange, and user info retrieval.
 
 ```json
 {
@@ -198,9 +189,11 @@ Here's an example of the discovery endpoint response:
 }
 ```
 
-In your application, make a request to the discovery endpoint during initialization. Parse the JSON response and extract the necessary endpoint URLs. Use these dynamically obtained URLs in your OAuth flow instead of hard-coded values.
+With OpenID Connect Discovery, your application can dynamically adapt to changes in the OpenID Provider's configuration without requiring code updates. This ensures that your application always uses the most up-to-date endpoint URLs. The drawback is that you will have to make extra fetch requests.
 
-With OpenID Connect Discovery, your application can dynamically adapt to changes in the OpenID Provider's configuration without requiring code updates. This ensures that your application always uses the most up-to-date endpoint URLs. **The drawback is you will have to make extra fetch requests.**
+## Account linking
+
+Account linking allows users to sign in with any of their social accounts and be authenticated as the same user on your application. It it usually done by checking the email address registered with the provider. If you're using email to link accounts, make sure to validate the user's email. Most providers provide a `is_verified` field or similar in user profiles. Do not assume that the email has been verified unless the provider explicitly mentions it in their documentation. Users without a verified email should be prevented from completing the authentication process and prompted to verify their email first.
 
 ## Other considerations
 
