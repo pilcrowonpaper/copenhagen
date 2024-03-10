@@ -13,13 +13,13 @@ title: "Passkeys"
 
 ## Overview
 
-Passkeys are built on top the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allows applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa).
+Passkeys are built on top of the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allow applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa).
 
 Passkeys are based on public key cryptography, where each user has a public-private key pair. The private key is stored in the user's device, while the public key is stored in your application. The device creates a signature with the private key and your application can use the public key to verify it.
 
 ## Challenge
 
-Each attestation and assertion has a challenge associated to it. A challenge is a randomly generated single-use [token](/server-side-tokens) stored in the server for preventing replay attacks. The recommended minimum entropy is 16 bytes.
+Each attestation and assertion has a challenge associated with it. A challenge is a randomly generated single-use [token](/server-side-tokens) stored in the server to prevent replay attacks. The recommended minimum entropy is 16 bytes.
 
 ## Registration
 
@@ -57,9 +57,9 @@ const credentialId: string = publicKeyCredential.id;
 - `user.name`: Unique user identifier (user ID, username, email)
 - `user.displayName`: Does not need to unique
 
-The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1_5 (RS256) to support a more wider range of devices but device that only supports it is rare.
+The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1_5 (RS256) to support a wider range of devices but devices that only support it are rare.
 
-The public key, client data, authenticator data, credential ID, and the challenge is sent to the server for verification. A simple way to send binary data is by encoding it with base64.
+The public key, client data, authenticator data, credential ID, and the challenge are sent to the server for verification. A simple way to send binary data is by encoding it with base64.
 
 The first step is to validate the challenge. Make sure to delete the challenge from storage as it is single-use. Next, check the client data and authenticator data. The origin is the domain your application is hosted on, including the protocol and port, and the relying party ID is the domain without the protocol or port.
 
@@ -120,7 +120,7 @@ Finally, check if the public key is valid, and create a new user with their publ
 
 ## Authentication
 
-Generate a challenge on the server and use it authenticate the user client side.
+Generate a challenge on the server and use it to authenticate the user client side.
 
 ```ts
 const publicKeyCredential: PublicKeyCredential = await navigator.credentials.get({
@@ -136,7 +136,7 @@ const signature: ArrayBuffer = response.signature);
 const credentialId: string = publicKeyCredential.id;
 ```
 
-The client data, authenticator data, signature, challenge, and credential ID is sent to the server. The challenge, the authenticator, and the client data is first verified. This part is nearly identical to the steps for verifying attestation.
+The client data, authenticator data, signature, challenge, and credential ID are sent to the server. The challenge, the authenticator, and the client data are first verified. This part is nearly identical to the steps for verifying attestation.
 
 ```go
 import (
@@ -180,7 +180,7 @@ if (authenticatorData[32] & 1) != 1 {
 }
 ```
 
-Next step is to verify the signature. Use credential ID to get the user's public key and verify the signature, which is ASN.1 DER encoded. The algorithm depends on the parameters passed when the credential was created.
+The next step is to verify the signature. Use credential ID to get the user's public key and verify the signature, which is ASN.1 DER encoded. The algorithm depends on the parameters passed when the credential was created.
 
 ```go
 import (
@@ -202,4 +202,3 @@ if !validSignature {
 	return errors.New("invalid signature")
 }
 ```
-

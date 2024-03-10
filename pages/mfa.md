@@ -7,7 +7,7 @@ title: "Multi-factor authentication (MFA)"
 ## Table of contents
 
 - [Overview](#overview)
-- [Time-based one time passwords (TOTP)](#time-based-one-time-passwords-totp)
+- [Time-based one-time passwords (TOTP)](#time-based-one-time-passwords-totp)
 	- [Generate QR code](#generate-qr-code)
 	- [Validate OTPs](#validate-otps)
 - [SMS](#sms)
@@ -24,9 +24,9 @@ MFA is when a user is required to input more than just a password to authenticat
 - Somewhere you are
 - Something you do
 
-## Time-based one time passwords (TOTP)
+## Time-based one-time passwords (TOTP)
 
-TOTP is defined in [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238), which is based on hash-based one time passwords (HOTP), defined in [RFC 4226](https://www.ietf.org/rfc/rfc4226.txt).
+TOTP is defined in [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238), which is based on hash-based one-time passwords (HOTP), defined in [RFC 4226](https://www.ietf.org/rfc/rfc4226.txt).
 
 Standard TOTP uses an authenticator app, usually installed on the user's mobile device, to generate a code for the user.
 

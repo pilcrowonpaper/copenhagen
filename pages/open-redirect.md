@@ -4,9 +4,9 @@ title: "Open redirect"
 
 # Open redirect
 
-Open redirect is a vulnerability where your application allows a user to control a redirect. 
+Open redirect is a vulnerability where your application allows a user to control a redirect.
 
-For example, you may want to redirect the user back to their original page after they sign in. To achieve, you add a `redirect_to` URL query parameter to the login page and form. When a user signs in, the user is redirected to the location defined in `redirect_to`.
+For example, you may want to redirect the user back to their original page after they sign in. To achieve this, you add a `redirect_to` URL query parameter to the login page and form. When a user signs in, the user is redirected to the location defined in `redirect_to`.
 
 ```
 https://example.com/login?redirect_to=%2Fhome

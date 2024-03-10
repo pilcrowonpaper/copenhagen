@@ -21,7 +21,7 @@ This page describes how to generate random strings and numbers from randomly gen
 
 ## Random strings
 
-The easiest and safest way to generate random strings is to generate random bytes and encode it with base16 (hex), base32, or base64 encoding schemes.
+The easiest and safest way to generate random strings is to generate random bytes and encode them with base16 (hex), base32, or base64 encoding schemes.
 
 ```go
 import (
@@ -79,7 +79,7 @@ rand.Read(bytes)
 value := bytes[0] & 0x03 // random value between [0, 3]
 ```
 
-For a custom range, a simple approach is to generate a very large random number compared to the maximum and use the modulo operator. Since this introduces [a modulo bias](#biases), the random integer must be sufficiently large. For example, if the maximum was 10 and we generate 32 random bits, the bias will be around 1/250,000,000 - which can be good enough for most use cases.
+For a custom range, a simple approach is to generate a very large random number compared to the maximum and use the modulo operator. Since this introduces [a modulo bias](#biases), the random integer must be sufficiently large. For example, if the maximum was 10 and we generated 32 random bits, the bias would be around 1/250,000,000 - which can be good enough for most use cases.
 
 ```go
 import (
@@ -107,7 +107,7 @@ func generateRandomUint32(max uint32): uint32 {
 }
 ```
 
-The safest approach then is to use rejection sampling, where a random value is repeatedly generated until its under the maximum. To increase the likelihood the random value is under the maximum, we can only generate the maximum number bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're generating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
+The safest approach then is to use rejection sampling, where a random value is repeatedly generated until it's under the maximum. To increase the likelihood the random value is under the maximum, we can only generate the maximum number of bits required to represent the maximum. For example, if the maximum is 10, we would only have to generate 4 bits. In the code below, we're generating a random byte and then masking the 4 leading bits to get 4 random bits (8-4=4).
 
 ```go
 import (
