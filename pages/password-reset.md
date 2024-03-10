@@ -43,4 +43,3 @@ If the user has implemented [multi-factor authentication](/mfa), such as via aut
 ## Rate limiting
 
 Any endpoint that can send emails should have strict rate limiting implemented. Use Captchas if necessary.
-
