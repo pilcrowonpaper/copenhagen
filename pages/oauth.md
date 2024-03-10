@@ -10,7 +10,8 @@ title: "OAuth"
 - [Create authorization URL](#create-authorization-url)
 - [Validate authorization code](#validate-authorization-code)
 - [Proof key for code exchange (PKCE)](#proof-key-for-code-exchange-pkce-flow)
-- [Open ID Connect (OIDC)](#open-id-connect-oidc)
+- [OpenID Connect (OIDC)](#openid-connect-oidc)
+	- [OpenID Connect Discovery](#openid-connect-discovery)
 - [Account linking](#account-linking)
 - [Other considerations](#other-considerations)
 
@@ -149,9 +150,9 @@ grant_type=authorization_code
 &code_verifier=<CODE_VERIFIER>
 ```
 
-## Open ID Connect (OIDC)
+## OpenID Connect (OIDC)
 
-[Open ID Connect](https://openid.net/specs/openid-connect-core-1_0.html) is a widely used protocol built on top of OAuth 2.0. An important addition to OAuth is that the identity provider returns an ID token alongside the access token. An ID token is a [JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519) that includes user data. It will always include a user ID in the `sub` field.
+[OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) is a widely used protocol built on top of OAuth 2.0. An important addition to OAuth is that the identity provider returns an ID token alongside the access token. An ID token is a [JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519) that includes user data. It will always include a user ID in the `sub` field. 
 
 ```
 {
@@ -161,6 +162,34 @@ grant_type=authorization_code
 ```
 
 While you can validate the token with a public key, this is not necessary for server-side applications and you can safely assume that the token is valid.
+
+### OpenID Connect Discovery
+
+OpenID Connect defines a [discovery mechanism](https://openid.net/specs/openid-connect-discovery-1_0.html) that allows clients to dynamically fetch the OpenID Provider's configuration, including the OAuth 2.0 endpoint locations. This eliminates the need to hard-code endpoint URLs in your application. To use OpenID Connect Discovery, your OpenID Provider must have a discovery endpoint available. 
+
+The discovery endpoint is a well-known URL that returns a JSON document containing the OpenID Provider's configuration information. Note that not all OAuth providers support OpenID Connect Discovery. Check your provider's documentation to determine if they offer a discovery endpoint. If not, you may still need to manually configure the endpoint URLs in your application.
+
+The well-known URL has the path `/.well-known/openid-configuration`. For example, Google's Discovery Endpoint looks like this:
+
+```
+https://accounts.google.com/.well-known/openid-configuration
+```
+
+The endpoint will return a JSON object containing the OpenID Provider's configuration, including the endpoint URLs for authorization, token exchange, and user info retrieval.
+
+```json
+{
+  "issuer": "https://example.com",
+  "authorization_endpoint": "https://example.com/oauth2/authorize",
+  "token_endpoint": "https://example.com/oauth2/token",
+  "userinfo_endpoint": "https://example.com/oauth2/userinfo",
+  "code_challenge_methods_supported": ["S256"],
+  "grant_types_supported": ["authorization_code", "refresh_token"],
+  "scopes_supported": ["openid", "email", "profile"]
+}
+```
+
+With OpenID Connect Discovery, your application can dynamically adapt to changes in the OpenID Provider's configuration without requiring code updates. This ensures that your application always uses the most up-to-date endpoint URLs. The drawback is that you will have to make extra fetch requests.
 
 ## Account linking
 
