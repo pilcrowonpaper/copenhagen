@@ -35,11 +35,11 @@ One way to verify email is to send a secret code stored in the server to the use
 
 This approach should be preferred over using links. People are increasingly less likely to click on links, and some filters may block emails with them. Using links also limits what device the user can use to create an account (eg. the user doesn't have access to their mailbox on their phone).
 
-The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically-secure random generator.
+The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically secure random generator.
 
-A single verification code should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Each code should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). The code must be single-use and immediately invalidated after validation. A new verification code should be generated every time the user asks for another email/code. 
+A single verification code should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Each code should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). The code must be single-use and immediately invalidated after validation. A new verification code should be generated every time the user asks for another email/code.
 
-Similar to a regular login form, throttling or rate-limiting based on the user ID must be implemented. A good limit is around 10 attempts per hour. Assuming proper limiting is implemented, the code can be valid for up to 24 hours. You should generate and resend a new code if the user inputted code has expired.
+Similar to a regular login form, throttling or rate-limiting based on the user ID must be implemented. A good limit is around 10 attempts per hour. Assuming proper limiting is implemented, the code can be valid for up to 24 hours. You should generate and resend a new code if the user-inputted code has expired.
 
 All sessions of a user should be invalidated when their email is verified.
 

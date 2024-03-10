@@ -28,11 +28,11 @@ For single-use tokens, any retrieval should also guarantee deletion. In SQL for 
 
 ## Generating tokens
 
-Tokens should have at least 112 bits of entropy (120-256 is a good range). For example, you could generate 15 random bytes and encode it with base32 to get a 24 character token. If you generate tokens by choosing random characters one-by-one, you should ensure a similar level of entropy. See the [Generating random values](/random-values) page for more information.
+Tokens should have at least 112 bits of entropy (120-256 is a good range). For example, you could generate 15 random bytes and encode it with base32 to get a 24-character token. If you generate tokens by choosing random characters one by one, you should ensure a similar level of entropy. See the [Generating random values](/random-values) page for more information.
 
-Tokens must be generated using a cryptographically-secure random generator. Fast, pseudo-random generators like those generally provided by standard math packages should be avoided for this.
+Tokens must be generated using a cryptographically secure random generator. Fast, pseudo-random generators like those generally provided by standard math packages should be avoided for this.
 
-Tokens should be case sensitive, but you may want to constrain your token generation to lowercase letters if your storage is case insensitive (e.g. MySQL).
+Tokens should be case-sensitive, but you may want to constrain your token generation to lowercase letters if your storage is case-insensitive (e.g. MySQL).
 
 > For a 120 bit token, it would take someone 2 quintillion years before they guess a valid token if they generate 10,000 tokens per second and there are 1,000,000 valid tokens in the system.
 
@@ -47,7 +47,7 @@ rand.Read(bytes)
 sessionId := base32.StdEncoding.EncodeToString(bytes)
 ```
 
-UUID v4 may fit these requirements (122 bits of entropy), but keep in mind that UUID v4 is space inefficient and the spec does not guarantee the use of a cryptographically-secure random generator.
+UUID v4 may fit these requirements (122 bits of entropy), but keep in mind that UUID v4 is space inefficient and the spec does not guarantee the use of a cryptographically secure random generator.
 
 ## Storing tokens
 

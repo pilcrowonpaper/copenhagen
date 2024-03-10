@@ -10,7 +10,7 @@ title: "Cross-site request forgery (CSRF)"
 	- [Cross-site vs cross-origin](#cross-site-vs-cross-origin)
 - [Prevention](#prevention)
 	- [Anti-CSRF tokens](#anti-csrf-tokens)
-	- [Signed double submit cookies](#signed-double-submit-cookies)
+	- [Signed double-submit cookies](#signed-double-submit-cookies)
 	- [Origin header](#origin-header)
 - [SameSite cookie attribute](#samesite-cookie-attribute)
 
@@ -53,11 +53,11 @@ CSRF can be prevented by only accepting POST and POST-like requests made by brow
 
 Protection must be implemented for all routes that deal with forms. If your application does not currently use forms, it may still be a good idea to at least [check the `Origin` header](#origin-header) to prevent future issues. It's also a generally good idea to only modify resources using POST and POST-like methods (PUT, DELETE, etc).
 
-For the common token based approach, the token should not be single-use (e.g. a new token for every form submission) as it will break with a single back button. It is also crucial that your pages have a strict cross-origin resource sharing (CORS) policy. If `Access-Control-Allow-Credentials` is not strict, a malicious site can send a GET request to get a HTML form with a valid CSRF token.
+For the common token-based approach, the token should not be single-use (e.g. a new token for every form submission) as it will break with a single back button. It is also crucial that your pages have a strict cross-origin resource sharing (CORS) policy. If `Access-Control-Allow-Credentials` is not strict, a malicious site can send a GET request to get an HTML form with a valid CSRF token.
 
 ### Anti-CSRF tokens
 
-This is a very simple method where each session have a unique CSRF [token](/server-side-tokens) associated with it.
+This is a very simple method where each session has a unique CSRF [token](/server-side-tokens) associated with it.
 
 ```html
 <form method="post">
@@ -67,9 +67,9 @@ This is a very simple method where each session have a unique CSRF [token](/serv
 </form>
 ```
 
-### Signed double submit cookies
+### Signed double-submit cookies
 
-If storing the token server-side is not an option, signed double submit cookies is another approach. This is different from the basic double submit cookie in that the token included in the form is signed with a secret.
+If storing the token server-side is not an option, using signed double-submit cookies is another approach. This is different from the basic double submit cookie in that the token included in the form is signed with a secret.
 
 A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key.
 
@@ -95,9 +95,9 @@ func generateCSRFToken(sessionId string) (string, []byte) {
 
 The token is stored as a cookie and the HMAC is stored in the form. The cookie should have a `Secure`, `HttpOnly`, and `SameSite` flag. To validate a request, the cookie can be used to verify the signature sent in the form data.
 
-#### Traditional double submit cookies
+#### Traditional double-submit cookies
 
-Regular double submit cookies that aren't signed will still leave you vulnerable if an attacker has access to a subdomain of your application's domain. This would allow them to set their own double submit cookies.
+Regular double-submit cookies that aren't signed will still leave you vulnerable if an attacker has access to a subdomain of your application's domain. This would allow them to set their own double-submit cookies.
 
 ### Origin header
 
@@ -120,12 +120,12 @@ func handleRequest(w http.ResponseWriter, request *http.Request) {
 }
 ```
 
-The `Origin` header is supported by all modern browsers since around 2020, though Chrome and Safari have supported it before that. If the `Origin` header is not included, do not allow the request.
+The `Origin` header has been supported by all modern browsers since around 2020, though Chrome and Safari have supported it before that. If the `Origin` header is not included, do not allow the request.
 
 The `Referer` header is a similar header introduced before the `Origin` header. This can be used as a fallback if the `Origin` header isn't defined.
 
 ## SameSite cookie attribute
 
-Session cookies should have a `SameSite` flag. This flag determines when the browser includes the cookie in requests. `SameSame=Lax` cookies will not be sent on cross-site, non-GET requests, while `SameSite=Strict` cookies will not be sent on any cross site requests. We recommend using `Lax` as the default as `Strict` cookies will not be sent when a user access your website via an external link.
+Session cookies should have a `SameSite` flag. This flag determines when the browser includes the cookie in requests. `SameSame=Lax` cookies will not be sent on cross-site, non-GET requests, while `SameSite=Strict` cookies will not be sent on any cross-site requests. We recommend using `Lax` as the default as `Strict` cookies will not be sent when a user accesses your website via an external link.
 
 If you set the value to `Lax`, it is crucial that your application does not use GET requests for modifying resources. Additionally, as this flag is relatively new and only protects against cross-site request forgery (instead of cross-origin request forgery), this should not be the only layer of defense.

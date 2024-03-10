@@ -36,11 +36,10 @@ Tokens should be valid for around an hour, and 24 hours at most. Invalidate exis
 
 The token must be single-use. Delete the token when the user sends a valid password through the form.
 
-Make sure to set the pages's [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `noreferrer` to protect the token from referer leakage.
+Make sure to set the pages' [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `noreferrer` to protect the token from referer leakage.
 
 If the user has implemented [multi-factor authentication](/mfa), such as via authenticator apps or passkeys, they should be prompted to authenticate using their second factor before entering their new password.
 
 ## Rate limiting
 
 Any endpoint that can send emails should have strict rate limiting implemented. Use Captchas if necessary.
-
