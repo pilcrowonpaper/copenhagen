@@ -11,7 +11,7 @@ title: "Sessions"
 	- [Sudo mode](#sudo-mode)
 - [Safeguards](#safeguards)
 - [Session invalidation](#session-invalidation)
-- [Session storage](#session-storage)
+- [Client storage](#client-storage)
   - [Cookies](#cookies)
   - [Web Storage API](#web-storage-api)
 - [Session fixation attacks](#session-fixation-attacks)
