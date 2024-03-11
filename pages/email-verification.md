@@ -1,5 +1,5 @@
 ---
-title: 'Email verification'
+title: "Email verification"
 ---
 
 # Email verification
@@ -8,22 +8,22 @@ If your application requires user email addresses to be unique, email verificati
 
 ## Table of contents
 
--   [Input validation](#input-validation)
-    -   [Sub-addressing](#sub-addressing)
--   [Email verification codes](#email-verification-codes)
--   [Email verification links](#email-verification-links)
--   [Changing emails](#changing-emails)
--   [Rate limiting](#rate-limiting)
+- [Input validation](#input-validation)
+	- [Sub-addressing](#sub-addressing)
+- [Email verification codes](#email-verification-codes)
+- [Email verification links](#email-verification-links)
+- [Changing emails](#changing-emails)
+- [Rate limiting](#rate-limiting)
 
 ## Input validation
 
 Emails are complex and cannot be fully validated using Regex. Attempting to use Regex may also introduce [ReDoS vulnerabilities](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS). Do not over-complicate it:
 
--   Includes at least 1 `@` character.
--   Has at least 1 character before the`@`.
--   The domain part includes at least 1 `.` and has at least 1 character before it.
--   It does not start or end with a whitespace.
--   Maximum of 255 characters.
+- Includes at least 1 `@` character.
+- Has at least 1 character before the`@`.
+- The domain part includes at least 1 `.` and has at least 1 character before it.
+- It does not start or end with a whitespace.
+- Maximum of 255 characters.
 
 ### Sub-addressing
 
