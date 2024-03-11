@@ -1,5 +1,5 @@
 ---
-title: "Email verification"
+title: 'Email verification'
 ---
 
 # Email verification
@@ -8,22 +8,22 @@ If your application requires user email addresses to be unique, email verificati
 
 ## Table of contents
 
-- [Input validation](#input-validation)
-	- [Sub-addressing](#sub-addressing)
-- [Email verification codes](#email-verification-codes)
-- [Email verification links](#email-verification-links)
-- [Changing emails](#changing-emails)
-- [Rate limiting](#rate-limiting)
+-   [Input validation](#input-validation)
+    -   [Sub-addressing](#sub-addressing)
+-   [Email verification codes](#email-verification-codes)
+-   [Email verification links](#email-verification-links)
+-   [Changing emails](#changing-emails)
+-   [Rate limiting](#rate-limiting)
 
 ## Input validation
 
 Emails are complex and cannot be fully validated using Regex. Attempting to use Regex may also introduce [ReDoS vulnerabilities](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS). Do not over-complicate it:
 
-- Includes at least 1 `@` character.
-- Has at least 1 character before the`@`.
-- The domain part includes at least 1 `.` and has at least 1 character before it.
-- It does not start or end with a whitespace.
-- Maximum of 255 characters.
+-   Includes at least 1 `@` character.
+-   Has at least 1 character before the`@`.
+-   The domain part includes at least 1 `.` and has at least 1 character before it.
+-   It does not start or end with a whitespace.
+-   Maximum of 255 characters.
 
 ### Sub-addressing
 
@@ -53,7 +53,7 @@ https://example.com/verify-email/<TOKEN>
 
 A single token should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Tokens should be single-use and be immediately deleted from storage after verification. The token should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). When a user asks for another verification email, you can resend the previous token instead of generating a new token if that token is still within expiration.
 
-Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `noreferrer` for any path that includes tokens to protect the tokens from referer leakage.
+Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `no-referrer` for any path that includes tokens to protect the tokens from referer leakage.
 
 All sessions should be invalidated when the email is verified.
 
