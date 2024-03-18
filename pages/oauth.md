@@ -152,7 +152,7 @@ grant_type=authorization_code
 
 ## OpenID Connect (OIDC)
 
-[OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) is a widely used protocol built on top of OAuth 2.0. An important addition to OAuth is that the identity provider returns an ID token alongside the access token. An ID token is a [JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519) that includes user data. It will always include a user ID in the `sub` field. 
+[OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) is a widely used protocol built on top of OAuth 2.0. An important addition to OAuth is that the identity provider returns an ID token alongside the access token. An ID token is a [JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519) that includes user data. It will always include a unique identifier for the user in the `sub` field. 
 
 ```
 {
@@ -161,7 +161,7 @@ grant_type=authorization_code
 }
 ```
 
-While you can validate the token with a public key, this is not necessary for server-side applications and you can safely assume that the token is valid.
+While you can validate the token with a public key, this is not strictly necessary for server-side applications if you're using HTTPS for communications.
 
 ### OpenID Connect Discovery
 
