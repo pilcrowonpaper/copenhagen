@@ -8,6 +8,7 @@ title: "Password reset"
 
 - [Overview](#overview)
 - [Password reset links](#password-reset-links)
+- [Error handling](#error-handling)
 - [Rate limiting](#rate-limiting)
 
 ## Overview
@@ -39,6 +40,10 @@ The token must be single-use. Delete the token when the user sends a valid passw
 Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `no-referrer` for any path that includes tokens to protect the tokens from referer leakage.
 
 If the user has implemented [multi-factor authentication](/mfa), such as via authenticator apps or passkeys, they should be prompted to authenticate using their second factor before entering their new password.
+
+## Error handling
+
+If the email is invalid, you can either tell the user that the email is invalid or keep the message vague (e.g. "We'll send a reset email if the account exists"). This will depend on whether you'd want to keep the validity of emails public or private. See [Error handling](/password-authentication#error-handling) in the Password authentication guide for more information.
 
 ## Rate limiting
 
