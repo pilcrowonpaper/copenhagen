@@ -38,6 +38,8 @@ HMAC SHA-1 is used to generate TOTPs. The secret key is exactly 160 bits and it 
 
 To share the secret, generate a [key URI](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) and encode it into a QR code. The `secret` is base32 encoded.
 
+You should verify that the user has correctly scanned the QR code by asking for the generated OTP.
+
 ```
 otpauth://totp/example%20app:John%20Doe?secret=JBSWY3DPEHPK3PXP&issuer=Example%20App&digits=6&period=30
 ```
