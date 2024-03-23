@@ -55,7 +55,7 @@ const credentialId: string = publicKeyCredential.id;
 - `rp.name`: Your application's name
 - `user.id`: Random ID
 - `user.name`: Unique user identifier (user ID, username, email)
-- `user.displayName`: Does not need to unique
+- `user.displayName`: Does not need to be unique
 
 The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1_5 (RS256) to support a wider range of devices but devices that only support it are rare.
 

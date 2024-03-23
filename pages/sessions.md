@@ -95,12 +95,12 @@ The maximum expiration for a cookie is anywhere between 1 and 2 years. If you pl
 
 Another option is to store session IDs inside `localStorage` or `sessionStorage`. If your website has an XSS vulnerability, this will allow attackers to directly read and steal the user's session ID. It is especially vulnerable to supply chain attacks since tokens can be stolen by just reading the entire local storage, without using any application-specific exploits.
 
-Session tokens can be sent with the request using the `Authorization` header for example. Do not send them inside URLs as query parameters or inside form data, nor do not accept tokens sent in such ways.
+Session tokens can be sent with the request using the `Authorization` header for example. Do not send them inside URLs as query parameters or inside form data, nor should tokens sent in this manner be accepted.
 
 ## Session fixation attacks
 
-Applications that maintain sessions for both authenticated and unauthenticated users and reuses the current session when a user signs in, are vulnerable to session fixations attacks.
+Applications that reuse the current session when a user signs in and maintain sessions for both authenticated and unauthenticated users are vulnerable to session fixation attacks.
 
 Say an application allows the session ID to be sent inside the URL as a query parameter. If an attacker shares a link to the sign-in page with a session ID already included and the user signs in, the attacker now has a valid session ID to impersonate that user. A similar attack can be done if the application accepts session IDs in forms or cookies, though the latter requires an XSS vulnerability to exploit.
 
-This can be avoided by only accepting session IDs via cookies and request headers, and always creating a new session when the user signs in.
+This can be avoided by always creating a new session when the user signs in and only accepting session IDs via cookies and request headers.
