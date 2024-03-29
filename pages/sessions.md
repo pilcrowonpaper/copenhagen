@@ -99,7 +99,7 @@ Session tokens can be sent with the request using the `Authorization` header for
 
 ## Session fixation attacks
 
-Applications that reuse the current session when a user signs in and maintain sessions for both authenticated and unauthenticated users are vulnerable to session fixation attacks.
+Applications that maintain sessions for both authenticated and unauthenticated users and reuse the current session when a user signs in are vulnerable to session fixation attacks.
 
 Say an application allows the session ID to be sent inside the URL as a query parameter. If an attacker shares a link to the sign-in page with a session ID already included and the user signs in, the attacker now has a valid session ID to impersonate that user. A similar attack can be done if the application accepts session IDs in forms or cookies, though the latter requires an XSS vulnerability to exploit.
 
