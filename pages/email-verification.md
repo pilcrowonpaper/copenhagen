@@ -55,7 +55,7 @@ A single token should be tied to a single user and email. This is especially imp
 
 Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `no-referrer` for any path that includes tokens to protect the tokens from referer leakage.
 
-All sessions should be invalidated when the email is verified.
+All sessions should be invalidated when the email is verified (and create a new one for the current user so they stay signed in).
 
 ## Changing emails
 
