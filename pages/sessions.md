@@ -6,15 +6,15 @@ title: "Sessions"
 
 ## Table of contents
 
-- [Overview](#overview)
-- [Session lifetime](#session-lifetime)
-	- [Sudo mode](#sudo-mode)
-- [Safeguards](#safeguards)
-- [Session invalidation](#session-invalidation)
-- [Client storage](#client-storage)
-  - [Cookies](#cookies)
-  - [Web Storage API](#web-storage-api)
-- [Session fixation attacks](#session-fixation-attacks)
+-   [Overview](#overview)
+-   [Session lifetime](#session-lifetime)
+    -   [Sudo mode](#sudo-mode)
+-   [Session hijacking](#session-hijacking)
+-   [Session invalidation](#session-invalidation)
+-   [Client storage](#client-storage)
+    -   [Cookies](#cookies)
+    -   [Web Storage API](#web-storage-api)
+-   [Session fixation attacks](#session-fixation-attacks)
 
 ## Overview
 
@@ -57,11 +57,15 @@ func validateSession(sessionId string) (*Session, error) {
 
 ### Sudo mode
 
-An alternative to short-lived sessions is to implement long-lived sessions coupled with sudo mode. Sudo mode allows authenticated users to access security-critical components for a limited time by re-authenticating with one of their credentials (passwords, passkeys, TOTP, etc). A simple way to implement this is by keeping track of when the user last used their credentials in each session. This approach provides the security benefits of short-lived sessions without annoying frequent users.
+An alternative to short-lived sessions is to implement long-lived sessions coupled with sudo mode. Sudo mode allows authenticated users to access security-critical components for a limited time by re-authenticating with one of their credentials (passwords, passkeys, TOTP, etc). A simple way to implement this is by keeping track of when the user last used their credentials in each session. This approach provides the security benefits of short-lived sessions without annoying frequent users. This can also help against [session hijacking](#session-hijacking).
 
-## Safeguards
+## Session hijacking
 
-Consider tracking the user agent (device) and IP address linked to the session to detect suspicious requests. IP addresses can be dynamic for mobile users so you may want to keep track of the general area (country) instead of the specific address. You can also limit the number of active sessions that a single user can have at any time.
+Session hijacking is another word for stealing sessions. Common attacks include XSS, man-in-the-middle (MITM), and session sniffing. MITM attacks are especially hard to mitigate since it's ultimately up to the users to protect their device and network. Still, there are some ways to protect your users.
+
+First, consider tracking the user agent (device) and IP address linked to the session to detect suspicious requests. IP addresses can be dynamic for mobile users so you may want to keep track of the general area (country) instead of the specific address. Limiting the number of sessions connected to a user based on these information is also a good safeguard.
+
+Since IP addresses and request headers can be easily spoofed, however, implementing [sudo mode](#sudo-mode) is recommended for any security-critical applications.
 
 ## Session invalidation
 
@@ -79,11 +83,11 @@ The client should store the session ID in the user's device to be used for subse
 
 Session cookies should have the following attributes:
 
-- `HttpOnly`: Cookies are only accessible server-side
-- `SameSite=Lax`: Use `Strict` for critical websites
-- `Secure`: Cookies can only be sent over HTTPS
-- `Max-Age` or `Expires`: Must be defined to persist cookies
-- `Path=/`: Cookies can be accessed from all routes
+-   `HttpOnly`: Cookies are only accessible server-side
+-   `SameSite=Lax`: Use `Strict` for critical websites
+-   `Secure`: Cookies can only be sent over HTTPS
+-   `Max-Age` or `Expires`: Must be defined to persist cookies
+-   `Path=/`: Cookies can be accessed from all routes
 
 [CSRF protection](/csrf) must be implemented when using cookies, and using the `SameSite` flag is not sufficient. Using cookies does not automatically protect your users from cross-site scripting attacks (XSS) as well. While the session ID can't be read directly, authenticated requests can still be made as browsers automatically include cookies in requests.
 
