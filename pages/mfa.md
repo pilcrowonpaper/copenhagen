@@ -97,6 +97,6 @@ Passkeys allow you to use in-device authentication methods, such as biometrics a
 
 ## Recovery codes
 
-If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use passwords that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes must be generated using a cryptographically-secure random generator. They can be generated with only 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented. When storing these codes, you should hash them with your preferred password hashing algorithm (e.g. Argon2id).
+If your application uses MFA, we recommend issuing users with 1 or more recovery codes. These are single-use passwords that can be used instead of passkeys/OTPs to sign in and reset their second-factor when a user loses access to their devices. The codes must be generated using a cryptographically-secure random generator. They can be generated with only 40 bits of entropy (10 characters when encoded with hex) assuming proper throttling is implemented. 
 
-These codes should be provided when the user first sets up MFA and the user should be able to download them anytime if they have access to one of their second factors.
+Unless you can securely store these codes, we recommend hashing them with your preferred password hashing algorithm (e.g. Argon2id). In this case, the codes are only visible the first time the user registers their second-factor. User should also be given the option to regenerate them if they have access to their second-factor.
