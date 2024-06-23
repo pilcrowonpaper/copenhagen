@@ -19,7 +19,7 @@ While passkeys are credentials that verify user identity, the same technology (W
 
 Using WebAuthn, applications can also verify the validity of the device with the manufacture. This requires attestation and is not covered in this page.
 
-### Vocabulary
+## Vocabulary
 
 -   Relying party: Your application.
 -   Authenticator: The device that holds the credential.
