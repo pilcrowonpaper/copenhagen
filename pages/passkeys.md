@@ -17,7 +17,7 @@ Passkeys are password replacements built on top of public-key cryptography and t
 
 While passkeys are credentials that verify user identity, the same technology (WebAuthn) can be used to check that user has access to their device (user presence). This makes using WebAuthn a great second-factor on top of regular passwords. Hardware security tokens that don't provide pin-code or biometrics authentication can be used here. This page will also cover this usage.
 
-Using WebAuthn, applications can also verify the validity of the device with the manufacture. This requires attestation and is not covered in this page.
+Using WebAuthn, applications can also verify the device with the manufacture. This requires attestation and is not covered in this page.
 
 ## Vocabulary
 
@@ -75,13 +75,13 @@ const attestationObject: ArrayBuffer = response.attestationObject;
 
 The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1.5 (RS256) to support a wider range of devices but devices that only support it are rare.
 
-For most cases, `attestation` should be set to `"none"`. We don't need to verify the validity of the authenticator and we'll be limiting what devices users can use since not all authenticators support it.
+For most cases, `attestation` should be set to `"none"`. We don't need to verify of the authenticator and not all authenticators support it.
 
 For passkeys, `userVerification` should be set to `"required"`. This ensures that the authenticator prompts the user for the pin code or fingerprint. For using WebAuthn as a second-factor, where you just need to check that user has the device, set this is `"preferred"` or even `"discouraged"`.
 
 The client data JSON and authenticator data are sent to the server for verification. A simple way to send binary data is by encoding it with base64. Another option is use schemes like CBOR that encode JSON-like data into binary.
 
-The first step is to parse the attestation object, which is encoded with CBOR. This includes the attestation statement and authenticator data. You can use the attestation statement to verify the legitimacy of the user's device if you required it. If you've set it to `"none"` in the client, verify that the statement format is `none`.
+The first step is to parse the attestation object, which is encoded with CBOR. This includes the attestation statement and authenticator data. You can use the attestation statement to verify the user's device if you required it. If you've set it to `"none"` in the client, verify that the statement format is `none`.
 
 ```go
 var attestationObject AttestationObject
