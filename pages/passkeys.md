@@ -6,92 +6,132 @@ title: "Passkeys"
 
 ## Table of contents
 
-- [Overview](#overview)
-- [Challenge](#challenge)
-- [Registration](#registration)
-- [Authentication](#authentication)
+-   [Overview](#overview)
+-   [Vocabulary](#vocabulary)
+-   [Registration](#registration)
+-   [Authentication](#authentication)
 
 ## Overview
 
-Passkeys are built on top of the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) and allow applications to authenticate users with in-device authentication methods, including biometrics and device pin-code. It can be more secure than traditional passwords as it doesn't require the user to remember their passwords. It can replace passwords entirely or be used in addition to passwords as a [second factor](/mfa).
+Passkeys are password replacements built on top of public-key cryptography and the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/). They allow users to authenticate with their device, either with a PIN code or biometrics. The private key is stored in the user's device, while the public key is stored in your application. Applications can authenticate users by verifying signatures. Since passkeys are bounded to the user's device (or devices) and brute-forcing is impossible, a potential attacker needs physical access to a device. This makes it a much secure alternative to passwords and can be as secure as passwords with 2FA using SMS, emails, or authenticator apps.
 
-Passkeys are based on public key cryptography, where each user has a public-private key pair. The private key is stored in the user's device, while the public key is stored in your application. The device creates a signature with the private key and your application can use the public key to verify it.
+While passkeys are credentials that verify user identity, the same technology (WebAuthn) can be used to check that user has access to their device (user presence). This makes using WebAuthn a great second-factor on top of regular passwords. Hardware security tokens that don't provide pin-code or biometrics authentication can be used here. This page will also cover this usage.
 
-## Challenge
+Using WebAuthn, applications can also verify the validity of the device with the manufacture. This requires attestation and is not covered in this page.
 
-Each attestation and assertion has a challenge associated with it. A challenge is a randomly generated single-use [token](/server-side-tokens) stored in the server to prevent replay attacks. The recommended minimum entropy is 16 bytes.
+### Vocabulary
+
+-   Relying party: Your application.
+-   Authenticator: The device that holds the credential.
+-   Challenge: A randomly generated, single-use [token](/server-side-tokens) to prevent replay attacks. The recommended minimum entropy is 16 bytes.
+-   User presence: User has access to the device.
+-   User verification: User has verified their identity via a pin-code or biometrics.
 
 ## Registration
+
+During the registration step, the authenticator creates a new credential and returns its public key.
 
 In the client, get a new challenge from the server and create a new credential with the [Web Authentication API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API). This will prompt the user to authenticate with their device. Browsers such as Safari will only allow you to call this method if it was initiated by a user interaction (button click).
 
 ```ts
-const publicKeyCredential: PublicKeyCredential = await navigator.credentials.create({
+const credential = await navigator.credentials.create({
 	publicKey: {
+		attestation: "none",
 		rp: { name: "My app" },
 		user: {
 			id: crypto.getRandomValues(new Uint8Array(32)),
-			name: userId,
-			displayName: username
+			name: username,
+			displayName: name,
 		},
 		pubKeyCredParams: [
 			{
 				type: "public-key",
 				// ECDSA with SHA-256
-				alg: -7
-			}
+				alg: -7,
+			},
 		],
-		challenge
-	}
+		challenge,
+		authenticatorSelection: {
+			userVerification: "required",
+		},
+	},
 });
-const response: AuthenticatorAttestationResponse = publicKeyCredential.response;
+if (!(credential instanceof PublicKeyCredential)) {
+	throw new Error("Failed to create credential");
+}
+const response = credential.response;
+if (!(response instanceof AuthenticatorAttestationResponse)) {
+	throw new Error("Unexpected");
+}
 
-const publicKey: ArrayBuffer = response.getPublicKey();
 const clientDataJSON: ArrayBuffer = response.clientDataJSON;
-const authenticatorData: ArrayBuffer = response.getAuthenticatorData();
-const credentialId: string = publicKeyCredential.id;
+const attestationObject: ArrayBuffer = response.attestationObject;
 ```
 
-- `rp.name`: Your application's name
-- `user.id`: Random ID
-- `user.name`: Unique user identifier (user ID, username, email)
-- `user.displayName`: Does not need to be unique
+-   `rp.name`: Your application's name.
+-   `user.id`: Random user ID for the authenticator. This can be different from the actual user ID your application uses.
+-   `user.name`: A human-friendly user identifier (username, email).
+-   `user.displayName`: A human-friendly display name (does not need to be unique).
 
-The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1_5 (RS256) to support a wider range of devices but devices that only support it are rare.
+The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1.5 (RS256) to support a wider range of devices but devices that only support it are rare.
 
-The public key, client data, authenticator data, credential ID, and the challenge are sent to the server for verification. A simple way to send binary data is by encoding it with base64.
+For most cases, `attestation` should be set to `"none"`. We don't need to verify the validity of the authenticator and we'll be limiting what devices users can use since not all authenticators support it.
 
-The first step is to validate the challenge. Make sure to delete the challenge from storage as it is single-use. Next, check the client data and authenticator data. The origin is the domain your application is hosted on, including the protocol and port, and the relying party ID is the domain without the protocol or port.
+For passkeys, `userVerification` should be set to `"required"`. This ensures that the authenticator prompts the user for the pin code or fingerprint. For using WebAuthn as a second-factor, where you just need to check that user has the device, set this is `"preferred"` or even `"discouraged"`.
+
+The client data JSON and authenticator data are sent to the server for verification. A simple way to send binary data is by encoding it with base64. Another option is use schemes like CBOR that encode JSON-like data into binary.
+
+The first step is to parse the attestation object, which is encoded with CBOR. This includes the attestation statement and authenticator data. You can use the attestation statement to verify the legitimacy of the user's device if you required it. If you've set it to `"none"` in the client, verify that the statement format is `none`.
+
+```go
+var attestationObject AttestationObject
+
+// Parse attestation object
+
+if attestationObject.Fmt != "none" {
+	return errors.New("invalid attestation statement format")
+}
+
+type AttestationObject  struct {
+	Fmt                  string // "fmt"
+	AttestationStatement AttestationStatement // "attStmt"
+	AuthenticatorData    []byte // "authData"
+}
+
+type AttestationStatement struct {
+	// see spec
+}
+```
+
+Next is to parse the authenticator data.
+
+-   Bytes 0-31: Relying party ID hash.
+-   Byte 32: Flags:
+    -   Bit 0 (least significant - rightmost): Use present.
+    -   Bit 2: User verified.
+    -   Bit 6: Includes credential data.
+-   Bytes 33-36: Signature counter.
+-   Variable bytes: Credential data (binary).
+
+The relying party ID is the domain without the protocol or port and the authenticator data includes the SHA-256 hash of it. For localhost, the relying party ID is `localhost`. Check for the user presence flag and for the user verification flag if you required user verification. The signature counter is incremented each time the credential is used and can be used to detect forged devices. If your application is intended to be used with hardware security tokens, where credentials are bound to the token, you'd want to store the counter with the credential and ensure the counter value is larger than the previous attempt. However, since passkeys are meant to be shared across devices, this can be safely ignored.
+
+Then, extract the credential ID and public key from the credential data.
+
+-   Bytes 0-15: ID of the authenticator.
+-   Bytes 16 and 17: Credential ID length.
+-   Variable bytes: Credential ID.
+-   Variable bytes: COSE public key.
+
+The public key is a CBOR-encoded COSE key.
 
 ```go
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 )
-
-var challenge []byte
-
-// Verify the challenge and delete it from storage.
-
-var publicKey, clientDataJSON, authenticatorData []byte
-var credentialId string
-
-var clientData ClientData
-json.Unmarshal(clientDataJSON, &clientData)
-
-if clientData.Type != "webauthn.create" {
-	return errors.New("invalid type")
-}
-if clientData.Challenge != base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(challenge) {
-	return errors.New("invalid challenge")
-}
-if clientData.Origin != "https://example.com" {
-	return errors.New("invalid origin")
-}
-
 if len(authenticatorData) < 37 {
 	return errors.New("invalid authenticator data")
 }
@@ -100,43 +140,45 @@ expectedRpIdHash := sha256.Sum256([]byte("example.com"))
 if bytes.Equal(rpIdHash, expectedRpIdHash[:]) {
 	return errors.New("invalid relying party ID")
 }
+
 // Check for the "user present" flag.
 if (authenticatorData[32] & 1) != 1 {
-	return errors.New("invalid flag")
+	return errors.New("user not present")
+}
+// Check for the "user verified" flag if you need user verification.
+if ((authenticatorData[32] >> 2) & 1) != 1 {
+	return errors.New("user not verified")
+}
+if ((authenticatorData[32] >> 6) & 1) != 1 {
+	return errors.New("missing credentials")
 }
 
-type ClientData struct {
-	Type	  string `json:"type"`
-	Challenge string `json:"challenge"`
-	Origin	string `json:"origin"`
+if (len(authenticatorData) < 55) {
+	return errors.New("invalid authenticator data")
+}
+credentialIdSize:= binary.BigEndian.Uint16(authenticatorData[53 : 55])
+if (len(authenticatorData) < 55 + credentialIdSize) {
+	return errors.New("invalid authenticator data")
+}
+credentialId := authenticatorData[55 : 55+credentialIdSize]
+coseKey := authenticatorData[55+credentialIdSize:]
+
+// Parse COSE public key
+```
+
+The structure of the public key will depend on the algorithm used. Below is the public key for ECDSA, which uses (x, y) for public keys. Validate the algorithm and curve.
+
+```
+{
+	1: 2 // EC2 key type
+	3: -7 // Algorithm ID for ECDSA P-256 with SHA-256
+	-1: 1 // Curve ID for P-256
+	-2: 0x00...00 // x coordinate in bit string
+	-3: 0x00...00 // y coordinate in bit string
 }
 ```
 
-Optionally, validate the attestation statement to verify that the attestation came from a legitimate device. However, unless your application has strict security or needs to verify the authenticity of the user's device, this is likely unnecessary.
-
-The authenticator data also includes a signature counter that is incremented every time a new signature is generated, which can be used to detect cloned authenticators. However, for passkeys specifically, this is not necessary as credentials are designed to be exported and shared.
-
-Finally, check if the public key is valid, and create a new user with their public key and the credential ID. The public key is in the SubjectPublicKeyInfo format. If you support multiple algorithms, you can parse the public key to get the algorithm identifier.
-
-## Authentication
-
-Generate a challenge on the server and use it to authenticate the user client side.
-
-```ts
-const publicKeyCredential: PublicKeyCredential = await navigator.credentials.get({
-	publicKey: {
-		challenge
-	}
-});
-
-const response: AuthenticatorAssertionResponse = publicKeyCredential.response;
-const clientDataJSON: ArrayBuffer = response.clientDataJSON);
-const authenticatorData: ArrayBuffer = response.authenticatorData);
-const signature: ArrayBuffer = response.signature);
-const credentialId: string = publicKeyCredential.id;
-```
-
-The client data, authenticator data, signature, challenge, and credential ID are sent to the server. The challenge, the authenticator, and the client data are first verified. This part is nearly identical to the steps for verifying attestation.
+Next, validate the client data, which is JSON-encoded. The origin is the domain of your application with the protocol and port. The challenge in the client data is base64url encoded with no padding.
 
 ```go
 import (
@@ -147,58 +189,79 @@ import (
 	"errors"
 )
 
-var challenge []byte
+var expectedChallenge []byte
 
 // Verify the challenge and delete it from storage.
 
-var clientDataJSON, authenticatorData []byte
+var credentialId string
 
 var clientData ClientData
-json.Unmarshal(clientDataJSON, &clientData)
 
-if clientData.Type != "webauthn.get" {
+// Parse JSON
+
+if clientData.Type != "webauthn.create" {
 	return errors.New("invalid type")
 }
-if clientData.Challenge != base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(challenge) {
+if !verifyChallenge(clientData.Challenge) {
 	return errors.New("invalid challenge")
 }
 if clientData.Origin != "https://example.com" {
 	return errors.New("invalid origin")
 }
 
-if len(authenticatorData) < 37 {
-	return errors.New("invalid authenticator data")
-}
-rpIdHash := authenticatorData[0:32]
-expectedRpIdHash := sha256.Sum256([]byte("example.com"))
-if !bytes.Equal(rpIdHash, expectedRpIdHash[:]) {
-	return errors.New("invalid relying party ID")
-}
-// Check for the "user present" flag.
-if (authenticatorData[32] & 1) != 1 {
-	return errors.New("invalid flag")
+type ClientData struct {
+	Type	  string // "type"
+	Challenge string // "challenge"
+	Origin	  string // "origin"
 }
 ```
 
-The next step is to verify the signature. Use credential ID to get the user's public key and verify the signature, which is ASN.1 DER encoded. The algorithm depends on the parameters passed when the credential was created.
+Finally, create a new user with their public key and the credential ID.
+
+## Authentication
+
+During the authentication step, the authenticator creates a new signature using the private key.
+
+Generate a challenge on the server and authenticate the user.
+
+```ts
+const credential = await navigator.credentials.get({
+	publicKey: {
+		challenge,
+		userVerification: "required",
+	},
+});
+
+if (!(credential instanceof PublicKeyCredential)) {
+	throw new Error("Failed to create credential");
+}
+const response = credential.response;
+if (!(response instanceof AuthenticatorAssertionResponse)) {
+	throw new Error("Unexpected");
+}
+
+const clientDataJSON: ArrayBuffer = response.clientDataJSON);
+const authenticatorData: ArrayBuffer = response.authenticatorData
+const signature: ArrayBuffer = response.signature);
+const credentialId: ArrayBuffer = publicKeyCredential.rawId;
+```
+
+The client data, authenticator data, signature, and credential ID are sent to the server. The challenge, the authenticator, and the client data are first verified. This part is nearly identical to the steps for verifying attestation expect that the client data type should be `webauthn.get`.
+
+Another difference is that the credential portion of the authenticator is not included.
 
 ```go
-import (
-	"crypto/ecdsa"
-	"crypto/sha256"
-	"errors"
-)
-
-var publicKey *ecdsa.PublicKey
-var signature []byte
-
-hashedClientDataJSON := sha256.Sum256(clientDataJSON)
-// Concatenate the authenticator data with the hashed client data JSON.
-data := append(authenticatorData, hashedClientDataJSON[:]...)
-hash := sha256.Sum256(data)
-
-validSignature := ecdsa.VerifyASN1(publicKey, hash[:], signature)
-if !validSignature {
-	return errors.New("invalid signature")
+if clientData.Type != "webauthn.get" {
+	return errors.New("invalid type")
 }
+```
+
+Finally, verify the signature. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is ASN.1 DER encoded.
+
+```go
+import "crypto/sha256"
+
+clientDataJSONHash := sha256.Sum256(clientDataJSON)
+// Concatenate the authenticator data with the hashed client data JSON.
+data := append(authenticatorData, clientDataJSONHash[:]...)
 ```
