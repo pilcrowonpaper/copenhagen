@@ -53,7 +53,7 @@ https://example.com/verify-email/<TOKEN>
 
 A single token should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Tokens should be single-use and be immediately deleted from storage after verification. The token should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). When a user asks for another verification email, you can resend the previous token instead of generating a new token if that token is still within expiration.
 
-Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `no-referrer` for any path that includes tokens to protect the tokens from referer leakage.
+Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `strict-origin` (or equivalent) for any path that includes tokens to protect the tokens from referer leakage.
 
 All sessions should be invalidated when the email is verified (and create a new one for the current user so they stay signed in).
 
