@@ -6,6 +6,8 @@ title: "Email verification"
 
 If your application requires user email addresses to be unique, email verification is a must. It discourages users from entering a random email address and, if password reset is implemented, allows users to take back accounts created with their email address. You may even want to block users from accessing your application's content until they verify their email address.
 
+*Email addresses are case-insensitive.* We recommend normalizing user-provided email addresses to lower case.
+
 ## Table of contents
 
 - [Input validation](#input-validation)
