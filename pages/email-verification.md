@@ -39,7 +39,7 @@ This approach has some advantages over using links:
 - Some filters may automatically classify emails with links as spam or phishing.
 - Using verification links may introduce friction if the user wants to finish the process on a device that does not have access to the verification message, or on a device that cannot open links.
 
-The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. (Use a longer code if the verification is part of a secure process, like creating a new account or changing contact information.) You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically secure random generator.
+The verification code should be at least 8 digits if the code is numeric, and at least 6 digits if it's alphanumeric. Use a stronger code if the verification is part of a secure process, like creating a new account or changing contact information. You should avoid using both lowercase and uppercase letters. You may also want to remove numbers and letters that can be misread (0, O, 1, I, etc). It must be generated using a cryptographically secure random generator.
 
 A single verification code should be tied to a single user and email. This is especially important if you allow users to change their email address after they're sent an email. Each code should be valid for at least 15 minutes (anywhere between 1-24 hours is recommended). The code must be single-use and immediately invalidated after validation. A new verification code should be generated every time the user asks for another email/code.
 
