@@ -49,7 +49,7 @@ ECDSA public keys are represented as a pair of positive integers, (x, y).
 
 ### SEC1
 
-In SEC 1, which defines ECDSA, public keys can either be uncompressed or compressed. Uncompressed keys are the concatenation of x and y, with a leading `0x04` byte. The values are encoded as big-endian bytes with a size equivalent to the curve size. For example, P-256 is 256 bits or 32 bytes in size.
+In [SEC 1](https://www.secg.org/sec1-v2.pdf), public keys can either be encoded in an uncompressed or compressed form. Uncompressed keys are the concatenation of x and y, with a leading `0x04` byte. The values are encoded as big-endian bytes with a size equivalent to the curve size. For example, P-256 is 256 bits or 32 bytes in size.
 
 ```
 0x04 || x || y
