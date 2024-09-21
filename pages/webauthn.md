@@ -318,9 +318,14 @@ if clientData.Type != "webauthn.get" {
 Finally, verify the signature. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is ASN.1 DER encoded.
 
 ```go
-import "crypto/sha256"
+import (
+	"crypto/ecdsa"
+	"crypto/sha256"
+)
 
 clientDataJSONHash := sha256.Sum256(clientDataJSON)
 // Concatenate the authenticator data with the hashed client data JSON.
 data := append(authenticatorData, clientDataJSONHash[:]...)
+hash := sha256.Sum256(data)
+validSignature := ecdsa.VerifyASN1(publicKey, hash[:], signature)
 ```
