@@ -55,7 +55,7 @@ In SEC 1, which defines ECDSA, public keys can either be uncompressed or compres
 0x04 || x || y
 ```
 
-Compressed keys are the x value with a leading `0x02` if x is even or `0x03` byte if odd. The y value can be calculated from x and the curve.
+Compressed keys are the x value with a leading `0x02` byte if x is even or `0x03` byte if x is odd. The y value can be derived from x and the curve.
 
 ```
 0x02 || x
