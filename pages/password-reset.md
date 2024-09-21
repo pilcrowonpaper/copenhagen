@@ -39,7 +39,7 @@ The token must be single-use. Delete the token when the user sends a valid passw
 
 Make sure to set the [Referrer Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) tag to `strict-origin` (or equivalent) for any path that includes tokens to protect the tokens from referer leakage.
 
-If the user has implemented [multi-factor authentication](/mfa), such as via authenticator apps or passkeys, they should be prompted to authenticate using their second factor before entering their new password.
+If the user has implemented [multi-factor authentication](/mfa), such as via authenticator apps or WebAuthn, they should be prompted to authenticate using their second factor before entering their new password.
 
 ## Error handling
 

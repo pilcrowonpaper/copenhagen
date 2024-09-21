@@ -15,7 +15,7 @@
 				["Generating random values", "/random-values"],
 				["OAuth", "/oauth"],
 				["Multi-factor authentication (MFA)", "/mfa"],
-				["Passkeys", "/passkeys"],
+				["WebAuthn", "/webauthn"],
 				["Cross-site request forgery (CSRF)", "/csrf"],
 				["Open redirect", "/open-redirect"]
 			]

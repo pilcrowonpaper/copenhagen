@@ -11,7 +11,7 @@ title: "Multi-factor authentication (MFA)"
 	- [Generate QR code](#generate-qr-code)
 	- [Validate OTPs](#validate-otps)
 - [SMS](#sms)
-- [WebAuthn (passkeys)](#webauthn-passkeys)
+- [WebAuthn](#webauthn)
 - [Recovery codes](#recovery-codes)
 
 ## Overview
@@ -91,11 +91,11 @@ We discourage SMS based MFA as it can be intercepted and unreliable at times. Ho
 
 Throttling must be implemented. A basic example is blocking attempts for 15 to 60 minutes after the 5th consecutive failed attempt. The user should also be notified to change the password as well.
 
-## WebAuthn (passkeys)
+## WebAuthn
 
 The [Web Authentication API (WebAuthn)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API) allows applications to use user devices for authentication using public key cryptography. You can either verify the user's identity with the devices PIN code or biometrics, or just verify the device. Both works as a second factor and the latter can be more user-friendly as users aren't prompted for their password/fingerprint.
 
-See the [passkeys](/passkeys) guide for implementations.
+See the [WebAuthn](/webauthn) guide for implementations.
 
 ## Recovery codes
 

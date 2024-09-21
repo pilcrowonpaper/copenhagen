@@ -1,8 +1,8 @@
 ---
-title: "Passkeys"
+title: "WebAuthn"
 ---
 
-# Passkeys
+# WebAuthn
 
 ## Table of contents
 
@@ -13,9 +13,9 @@ title: "Passkeys"
 
 ## Overview
 
-Passkeys are password replacements built on top of public-key cryptography and the [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/). They allow users to authenticate with their device, either with a PIN code or biometrics. The private key is stored in the user's device, while the public key is stored in your application. Applications can authenticate users by verifying signatures. Since passkeys are bounded to the user's device (or devices) and brute-forcing is impossible, a potential attacker needs physical access to a device. This makes it a much secure alternative to passwords and can be as secure as passwords with 2FA using SMS, emails, or authenticator apps.
+The [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) allow users to authenticate with their device, either with a PIN code or biometrics. The private key is stored in the user's device, while the public key is stored in your application. Applications can authenticate users by verifying signatures. Since credentials are bounded to the user's device (or devices) and brute-forcing is impossible, a potential attacker needs physical access to a device.
 
-While passkeys are credentials that verify user identity, the same technology (WebAuthn) can be used to check that user has access to their device (user presence). This makes using WebAuthn a great second-factor on top of regular passwords. Hardware security tokens that don't provide pin-code or biometrics authentication can be used here. This page will also cover this usage.
+WebAuthn are usually used in 2 ways - with passkeys or security tokens. While they don't have a strict definition, passkeys usually refer to credentials that can replace passwords and stored in the authenticator (resident keys). Security tokens, on the other hand, are meant to be used as a second factor, after authenticating with a password. Credentials for 2FA are usually encrypted and stored in the relying party's server. In both cases, they are a more secure alternatives to existing methods.
 
 Using WebAuthn, applications can also verify the device with the manufacture. This requires attestation and is not covered in this page.
 
@@ -26,6 +26,7 @@ Using WebAuthn, applications can also verify the device with the manufacture. Th
 -   Challenge: A randomly generated, single-use [token](/server-side-tokens) to prevent replay attacks. The recommended minimum entropy is 16 bytes.
 -   User presence: User has access to the device.
 -   User verification: User has verified their identity via a pin-code or biometrics.
+-   Resident keys, discoverable credentials: Credentials stored in stored in authenticators (user devices and security tokens). Non-resident keys are encrypted and stored in relying party servers (your database).
 
 ## Registration
 
@@ -52,8 +53,18 @@ const credential = await navigator.credentials.create({
 		],
 		challenge,
 		authenticatorSelection: {
+			// See note below.
 			userVerification: "required",
+			residentKey: "required",
+			requireResidentKey: true,
 		},
+		// list of existing credentials
+		excludeCredentials: [
+			{
+				id: new Uint8Array(/*...*/),
+				type: "public-key",
+			},
+		],
 	},
 });
 if (!(credential instanceof PublicKeyCredential)) {
@@ -72,12 +83,42 @@ const attestationObject: ArrayBuffer = response.attestationObject;
 -   `user.id`: Random user ID for the authenticator. This can be different from the actual user ID your application uses.
 -   `user.name`: A human-friendly user identifier (username, email).
 -   `user.displayName`: A human-friendly display name (does not need to be unique).
+-   `excludeCredentials`: A list of the user's credentials to avoid duplicate credentials.
 
 The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1.5 (RS256) to support a wider range of devices but devices that only support it are rare.
 
 For most cases, `attestation` should be set to `"none"`. We don't need to verify of the authenticator and not all authenticators support it.
 
-For passkeys, `userVerification` should be set to `"required"`. This ensures that the authenticator prompts the user for the pin code or fingerprint. For using WebAuthn as a second-factor, where you just need to check that user has the device, set this is `"preferred"` or even `"discouraged"`.
+For passkeys, ensure the public key is a resident key and requires user verification.
+
+```ts
+const credential = await navigator.credentials.create({
+	publicKey: {
+		// ...
+		authenticatorSelection: {
+			userVerification: "required",
+			residentKey: "required",
+			requireResidentKey: true,
+		},
+	},
+});
+```
+
+For security tokens, we can skip user verification and the credential doesn't need to be a resident key. We can limit the authenticator to security tokens by setting `authenticatorAttachment` to `cross-platform` as well.
+
+```ts
+const credential = await navigator.credentials.create({
+	publicKey: {
+		// ...
+		authenticatorSelection: {
+			userVerification: "discouraged",
+			residentKey: "discouraged",
+			requireResidentKey: false,
+			authenticatorAttachment: "cross-platform",
+		},
+	},
+});
+```
 
 The client data JSON and authenticator data are sent to the server for verification. A simple way to send binary data is by encoding it with base64. Another option is use schemes like CBOR that encode JSON-like data into binary.
 
@@ -244,6 +285,24 @@ const clientDataJSON: ArrayBuffer = response.clientDataJSON);
 const authenticatorData: ArrayBuffer = response.authenticatorData
 const signature: ArrayBuffer = response.signature);
 const credentialId: ArrayBuffer = publicKeyCredential.rawId;
+```
+
+For implementing 2FA with security tokens, pass a list of the user's credentials to `allowCredentials` to support non-resident keys.
+
+```ts
+const credential = await navigator.credentials.get({
+	publicKey: {
+		challenge,
+		userVerification: "required",
+		// list of user credentials
+		allowCredentials: [
+			{
+				id: new Uint8Array(/*...*/),
+				type: "public-key",
+			},
+		],
+	},
+});
 ```
 
 The client data, authenticator data, signature, and credential ID are sent to the server. The challenge, the authenticator, and the client data are first verified. This part is nearly identical to the steps for verifying attestation expect that the client data type should be `webauthn.get`.
