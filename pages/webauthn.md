@@ -307,15 +307,15 @@ const credential = await navigator.credentials.get({
 
 The client data, authenticator data, signature, and credential ID are sent to the server. The challenge, the authenticator, and the client data are first verified. This part is nearly identical to the steps for verifying attestation expect that the client data type should be `webauthn.get`.
 
-Another difference is that the credential portion of the authenticator is not included.
-
 ```go
 if clientData.Type != "webauthn.get" {
 	return errors.New("invalid type")
 }
 ```
 
-Finally, verify the signature. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is ASN.1 DER encoded.
+Another difference is that the credential portion of the authenticator is not included.
+
+Use the credential ID to get the credential's public key. **For 2FA, ensure that the credential belongs to the authenticated user.** Skipping this check will allow malicious actors to entirely skip 2FA. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is ASN.1 DER encoded.
 
 ```go
 import (
