@@ -257,7 +257,7 @@ type ClientData struct {
 }
 ```
 
-Finally, create a new user with their public key and the credential ID.
+Finally, create a new user with their public key and the credential ID. We recommend converting the COSE-encoded public key into one of the more compact and standard formats ([ECDSA](/cryptography/ecdsa#public-keys)).
 
 ## Authentication
 
@@ -315,7 +315,7 @@ if clientData.Type != "webauthn.get" {
 
 Another difference is that the credential portion of the authenticator is not included.
 
-Use the credential ID to get the credential's public key. **For 2FA, ensure that the credential belongs to the authenticated user.** Skipping this check will allow malicious actors to entirely skip 2FA. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is ASN.1 DER encoded.
+Use the credential ID to get the credential's public key. **For 2FA, ensure that the credential belongs to the authenticated user.** Skipping this check will allow malicious actors to entirely skip 2FA. The signature is of the authenticator data and the SHA-256 hash of the client data JSON. For ECDSA, the signature is [ASN.1 DER encoded](/cryptography/ecdsa#pkix).
 
 ```go
 import (
