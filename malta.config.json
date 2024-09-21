@@ -21,6 +21,12 @@
 			]
 		},
 		{
+			"title": "Cryptography",
+			"pages": [
+				["ECDSA", "/cryptography/ecdsa"]
+			]
+		},
+		{
 			"title": "Links",
 			"pages": [
 				[
