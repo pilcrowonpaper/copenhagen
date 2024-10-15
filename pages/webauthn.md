@@ -87,7 +87,7 @@ const attestationObject: ArrayBuffer = response.attestationObject;
 
 The algorithm ID is from the [IANA COSE Algorithms registry](https://www.iana.org/assignments/cose/cose.xhtml). ECDSA with SHA-256 (ES256) is recommended as it is widely supported. You can also pass `-257` for RSASSA-PKCS1-v1.5 (RS256) to support a wider range of devices but devices that only support it are rare.
 
-For most cases, `attestation` should be set to `"none"`. We don't need to verify of the authenticator and not all authenticators support it.
+For most cases, `attestation` should be set to `"none"`. We don't need to verify the manufacturer of the authenticator and not all authenticators support it.
 
 For passkeys, ensure the public key is a resident key and requires user verification.
 
