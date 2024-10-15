@@ -17,7 +17,7 @@ The [Web Authentication (WebAuthn) standard](https://www.w3.org/TR/webauthn-2/) 
 
 WebAuthn are usually used in 2 ways - with passkeys or security tokens. While they don't have a strict definition, passkeys usually refer to credentials that can replace passwords and stored in the authenticator (resident keys). Security tokens, on the other hand, are meant to be used as a second factor, after authenticating with a password. Credentials for 2FA are usually encrypted and stored in the relying party's server. In both cases, they are a more secure alternatives to existing methods.
 
-Using WebAuthn, applications can also verify the device with the manufacture. This requires attestation and is not covered in this page.
+Using WebAuthn, applications can also verify the device with the manufacturer. This requires attestation and is not covered in this page.
 
 ## Vocabulary
 
