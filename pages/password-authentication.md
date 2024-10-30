@@ -138,5 +138,6 @@ If you need to keep the username or email private, make sure you do not leak suc
 ## Other considerations
 
 - Do not prevent users from copy-pasting passwords as it discourages users from using password managers.
+- Do not require users to change passwords periodically.
 - Ask for the current password when a user attempts to change their password.
 - [Open redirect](/open-redirect).
