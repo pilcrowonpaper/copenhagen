@@ -17,6 +17,8 @@ A common approach to password reset is to use the user's email address. The user
 
 The email does not need to be verified before sending a reset link. You should even mark a user's email address as verified if they reset their password.
 
+Invalidate all existing sessions linked to the user when the user resets their password. 
+
 This page will only cover password reset links as it is the most common approach.
 
 ## Password reset links
