@@ -63,7 +63,7 @@ import (
 	"math"
 )
 
-func generateTOTP(secret []byte) {
+func generateTOTP(secret []byte) string {
 	digits := 6
 	counter := time.Now().Unix() / 30
 
@@ -75,7 +75,7 @@ func generateTOTP(secret []byte) {
 	HS := mac.Sum(nil)
 	offset := HS[19] & 0x0f
 	Snum := binary.BigEndian.Uint32(HS[offset:offset+4]) & 0x7fffffff
-	D := Snum % int(math.Pow(10, float64(digits)))
+	D := Snum % uint32(math.Pow(10, float64(digits)))
 	// Pad "0" to make it 6 digits.
 	return fmt.Sprintf("%06d", D)
 }
