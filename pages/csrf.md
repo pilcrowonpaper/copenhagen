@@ -71,7 +71,7 @@ This is a very simple method where each session has a unique CSRF [token](/serve
 
 If storing the token server-side is not an option, using signed double-submit cookies is another approach. This is different from the basic double submit cookie in that the token included in the form is signed with a secret.
 
-A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key. Each HMAC must be linked to the user's session.
+A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key. Each HMAC must be linked to the user's session. You can alternatively encrypt the token with algorithms like AES.
 
 ```go
 func generateCSRFToken(sessionId string) (string, []byte) {
@@ -85,7 +85,7 @@ func generateCSRFToken(sessionId string) (string, []byte) {
 }
 ```
 
-The token is stored as a cookie and the HMAC is stored in the form. The cookie should have a `Secure`, `HttpOnly`, and `SameSite` flag. To validate a request, the cookie can be used to verify the signature sent in the form data.
+The token is stored as a cookie and the HMAC is embedded in the form. The cookie should have the `Secure`, `HttpOnly`, and `SameSite` attribute. To validate a request, the cookie can be used to verify the signature sent in the form data.
 
 #### Traditional double-submit cookies
 
