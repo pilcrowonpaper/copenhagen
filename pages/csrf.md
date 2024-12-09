@@ -71,22 +71,14 @@ This is a very simple method where each session has a unique CSRF [token](/serve
 
 If storing the token server-side is not an option, using signed double-submit cookies is another approach. This is different from the basic double submit cookie in that the token included in the form is signed with a secret.
 
-A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key.
+A new [token](/server-side-tokens) is generated and hashed with HMAC SHA-256 using a secret key. Each HMAC must be linked to the user's session.
 
 ```go
-func generateCSRFToken() (string, []byte) {
+func generateCSRFToken(sessionId string) (string, []byte) {
 	buffer := [10]byte{}
 	crypto.rand.Read(buffer)
 	csrfToken := base64.StdEncoding.encodeToString(buffer)
 	mac := hmac.New(sha256.New, secret)
-	mac.Write([]byte(csrfToken))
-	csrfTokenHMAC := mac.Sum(nil)
-	return csrfToken, csrfTokenHMAC
-}
-
-// Optionally, link the cookie to a specific session ID.
-func generateCSRFToken(sessionId string) (string, []byte) {
-	// ...
 	mac.Write([]byte(csrfToken + "." + sessionId))
 	csrfTokenHMAC := mac.Sum(nil)
 	return csrfToken, csrfTokenHMAC
