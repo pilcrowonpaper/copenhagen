@@ -98,8 +98,8 @@ Optionally use the `secret` parameter to pepper your hashes. [See OWASP for deta
 Recommended minimum parameters:
 
 - `N`: 16384
-- `P`: 16
-- `r`: 1
+- `r`: 16
+- `p`: 1
 - `dkLen`: 64
 
 [See OWASP for details](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#scrypt).
